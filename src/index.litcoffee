@@ -56,6 +56,8 @@
         if input.toString() isnt 'Invalid Date'
           query[field] = $gte: input.toISOString()
 
+        return
+
 
     MongoQS.prototype.parse = (query) ->
       res = {}
