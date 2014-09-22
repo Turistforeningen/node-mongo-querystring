@@ -8,7 +8,7 @@
         switch param
           when 'bbox' then @custom.bbox = @customBBOX field
           when 'near' then @custom.near = @customNear field
-          when 'after' then @custom.near = @customNear field
+          when 'after' then @custom.after = @customAfter field
 
       return @
 
