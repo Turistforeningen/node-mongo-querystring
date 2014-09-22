@@ -1,0 +1,45 @@
+{
+  "name": "mongo-querystring",
+  "version": "0.0.1",
+  "description": "Parse and pass URL queries to MongoDB query",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Turistforeningen/node-mongo-querystring.git"
+  },
+  "main": "lib/index.js",
+  "directories": {
+    "src": "src",
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "build": "coffee --bare --compile --output lib/ src/*",
+    "prepublish": "coffee --bare --compile --output lib/ src/*",
+    "postpublish": "rm -rf lib/*",
+    "test": "mocha -w -b -c --check-leaks test/suite.coffee -R progress --compilers coffee:coffee-script/register",
+    "test-drone": "node_modules/.bin/mocha -b -c --check-leaks test/suite.coffee -R spec --compilers coffee:coffee-script/register"
+  },
+  "keywords": [
+    "query",
+    "querystring",
+    "parser",
+    "uri",
+    "url",
+    "mongo",
+    "mongodb"
+  ],
+  "author": {
+    "name": "Hans Kristian Flaatten",
+    "email": "hans.kristian.flaatten@turistforeningen.no",
+    "url": "https://github.com/starefossen"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Turistforeningen/node-mongo-querystring/issues"
+  },
+  "homepage": "https://github.com/Turistforeningen/node-mongo-querystring",
+  "devDependencies": {
+    "coffee-script": "^1.8.0",
+    "mocha": "^1.21.4"
+  }
+}
