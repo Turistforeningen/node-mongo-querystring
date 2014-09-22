@@ -17,7 +17,7 @@
         bbox = bbox.split ','
 
         if bbox.length is 4
-          val = parseFloat(val) for val in bbox
+          bbox[key] = parseFloat(val) for val, key in bbox
 
           res[field] = $geoWithin: $geometry:
             type: 'Polygon'
@@ -36,7 +36,7 @@
         input = input.split ','
 
         if input.length is 2
-          val = parseFloat(val) for val in input
+          input[key] = parseFloat(val) for val, key in input
 
           query[field] = $near: $geometry:
             type: 'Point'
