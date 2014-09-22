@@ -149,4 +149,23 @@ describe 'parse()', ->
     it 'should ingore multiple keys'
 
   describe 'custom', ->
+    it 'should enable built in bbox handler', ->
+      qs = new MongoQS custom: bbox: 'geojson'
+      assert.deepEqual qs.parse({bbox: '0,1,2,3'}), geojson:
+        $geoWithin:
+          $geometry:
+            type: 'Polygon'
+            coordinates: [[[0,1],[2,1],[2,3],[0,3],[0,1]]]
+
+    it 'should enable built in near handler', ->
+      qs = new MongoQS custom: near: 'geojson'
+      assert.deepEqual qs.parse({near: '0,1'}), geojson:
+        $near:
+          $geometry:
+            type: 'Point'
+            coordinates: [0,1]
+
+    it 'should enable build in after handler', ->
+      qs = new MongoQS custom: after: 'endret'
+      assert.deepEqual qs.parse({after: '2014-01-01'}), endret: $gte: '2014-01-01T00:00:00.000Z'
 

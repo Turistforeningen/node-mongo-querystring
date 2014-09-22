@@ -69,11 +69,14 @@
 
         key = @alias[key] if @alias[key]
 
+        if @custom[key]
+          @custom[key] res, val
+
 If the value is empty we treat the query parameter as an
 [$exists](http://docs.mongodb.org/manual/reference/operator/query/exists/)
 operator.
 
-        if not val
+        else if not val
           res[key] = $exists: true
 
 Check for supported operators in `@ops`. This is configured when
