@@ -24,6 +24,8 @@ describe 'customBBOX()', ->
         [0, 3]
         [0, 1]
       ]]
+    for pair in query.geojson.$geoWithin.$geometry.coordinates[0]
+      assert.equal typeof val, 'number' for val in pair
 
 describe 'customNear()', ->
   it 'should not genearate $near query for invalid point', ->
@@ -36,6 +38,7 @@ describe 'customNear()', ->
     assert.deepEqual query, geojson: $near: $geometry:
       type: 'Point'
       coordinates: [0, 1]
+    assert.equal typeof val, 'number' for val in query.geojson.$near.$geometry.coordinates
 
 describe 'customAfter()', ->
   it 'should not generate after query for invalid date', ->
