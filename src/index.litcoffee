@@ -12,6 +12,8 @@
 
       return @
 
+## #customBBOX(`string` field)
+
     MongoQS.prototype.customBBOX = (field) ->
       (res, bbox) ->
         bbox = bbox.split ','
@@ -31,6 +33,8 @@
 
         return
 
+## #customNear(`string` field)
+
     MongoQS.prototype.customNear = (field) ->
       (query, input) ->
         input = input.split ','
@@ -43,6 +47,8 @@
             coordinates: input
 
         return
+
+## #customAfter(`string` field)
 
     MongoQS.prototype.customAfter = (field) ->
       (query, input) ->
@@ -58,6 +64,16 @@
 
         return
 
+## #parse(`object` query)
+
+Main query param parser method which follows the following order of operations.
+
+1. Ignored query param name checking
+2. Invalid query param type checking
+3. Invalid query param name checking
+4. Aliased query param conversion
+5. Custom query param parsing
+6. Allowed query param ops parsing
 
     MongoQS.prototype.parse = (query) ->
       res = {}
