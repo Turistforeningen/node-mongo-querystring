@@ -72,6 +72,7 @@ if you are working with ExpressJS.
 
 ```javascript
 var query = qs.parse(req.params);
+
 mongo.collection('mycol').find(query, field).toArray(function(err, documents) {
   // matching documents
 });
