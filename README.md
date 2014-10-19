@@ -4,12 +4,20 @@ MongoDB QueryString [![Build Status](https://drone.io/github.com/Turistforeninge
 [![NPM](https://nodei.co/npm/mongo-querystring.png?downloads=true)](https://www.npmjs.org/package/mongo-querystring)
 
 Accept MongoDB query parameters through URI queries safe and easy. This is
-useful when building an API and accepting various user specificed queries to
-your schema less database.
+useful when building an API and accepting various user specificed queries.
 
-Allows you to specify you own custom query methods as well as accepting build
-in MongoDB basic operators such as `$ne`, `$gt`, `$lt`, `$regex`, `$exists` and
-build in support for advanced queries such as `$geoWithin` and `$near`.
+## Features
+
+* Basic operators
+  * `$ne`
+  * `$gt`
+  * `$lt`
+  * `$regex`
+  * `$exists`
+* Geospatial operators
+  * `$geoWithin`
+  * `$near`
+* Custom queries
 
 ## Install
 
