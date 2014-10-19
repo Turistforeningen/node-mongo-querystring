@@ -53,7 +53,7 @@ that your users will be using and a function which takes the result query object
 and the value for query parameter.
 
 ```javascript
-qs = new MongoQS({
+var qs = new MongoQS({
   custom: {
     urlQueryParamName: function(query, input) {
       // do some processing of input value
