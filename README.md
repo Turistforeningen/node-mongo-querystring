@@ -40,7 +40,13 @@ var MongoQS = require('mongo-querystring');
 * `object` ignore - ignored query params
 * `object` custom - custom query params
 
-#### Custom query params
+#### Bult in custom queries
+
+* `bbox` - bounding box query
+* `near` - proximity query
+* `after` - modified since query
+
+#### Define custom queries
 
 Custom queries are on the folling form; you define the URL query parameter name
 that your users will be using and a function which takes the result query object
