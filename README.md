@@ -71,7 +71,8 @@ Params is an object with URI query params and their values. Ex. `req.params`
 if you are working with ExpressJS.
 
 ```javascript
-collection.find(qs.parse(params), field).toArray(function(err, documents) {
+var query = qs.parse(req.params);
+mongo.collection('mycol').find(query, field).toArray(function(err, documents) {
   // matching documents
 });
 ```
