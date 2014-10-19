@@ -8,6 +8,8 @@ useful when building an API and accepting various user specificed queries.
 
 ## Features
 
+* Aliased query parameters
+* Ignored query parameters
 * Basic operators
   * `$ne`
   * `$gt`
@@ -17,7 +19,7 @@ useful when building an API and accepting various user specificed queries.
 * Geospatial operators
   * `$geoWithin`
   * `$near`
-* Custom queries
+* Custom query functions
 
 ## Install
 
