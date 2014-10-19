@@ -33,7 +33,7 @@ npm install mongo-querystring --save
 var MongoQS = require('mongo-querystring');
 ```
 
-### new MongoQS(`options`)
+### new MongoQS(`object` options)
 
 * `Array` ops - list of supported operators
 * `object` alias - query param aliases
@@ -42,9 +42,24 @@ var MongoQS = require('mongo-querystring');
 
 #### Custom query params
 
-`TODO`
+Custom queries are on the folling form; you define the URL query parameter name
+that your users will be using and a function which takes the result query object
+and the value for query parameter.
 
-### qs.parse(`params`)
+```javascript
+qs = new MongoQS({
+  custom: {
+    urlQueryParamName: function(query, input) {
+      // do some processing of input value
+      // add your queries to the query object
+      query['someField'] = input;
+      query['someOtherFiled'] = 'some value';
+    }
+  }
+});
+```
+
+### qs.parse(`object` params)
 
 Params is an object with URI query params and their values. Ex. `req.params`
 if you are working with ExpressJS.
