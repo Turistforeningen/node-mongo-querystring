@@ -1,7 +1,11 @@
     module.exports = MongoQS = (opts) ->
+      if opts?.ignore
+        deprecate.property opts, 'ignore'
+        opts.blacklist = opts.ignore
+
       @ops = opts?.ops or ['!', '^', '$', '~', '>', '<']
       @alias = opts?.alias or {}
-      @ignore = opts?.ignore or {}
+      @blacklist = opts?.blacklist or {}
       @custom = opts?.custom or {}
 
       for param, field of @custom
@@ -79,7 +83,7 @@ Main query param parser method which follows the following order of operations.
       res = {}
 
       for key, val of query
-        continue if @ignore[key]
+        continue if @blacklist[key]
         continue if typeof val isnt 'string'
         continue if not /^[a-zæøå0-9-_.]+$/i.test key
 
@@ -121,4 +125,6 @@ instanciating `MongoQS` and the defaults are `!`, `^`, `$`, `~`, `>`, and `<`.
           res[key] = if isNaN(val) then val else parseFloat(val, 10)
 
       res
+
+    deprecate = require('depd')('mongo-querystring')
 

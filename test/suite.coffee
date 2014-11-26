@@ -146,13 +146,13 @@ describe 'parse()', ->
       qs = new MongoQS alias: foo: 'bar', baz: 'bax'
       assert.deepEqual qs.parse({foo: 'bix', baz: 'box'}), bar: 'bix', bax: 'box'
 
-  describe 'ignoring', ->
-    it 'should ignore key', ->
-      qs = new MongoQS ignore: foo: true
+  describe 'blacklisting', ->
+    it 'should blacklist key', ->
+      qs = new MongoQS blacklist: foo: true
       assert.deepEqual qs.parse({foo: 'bar', bar: 'foo'}), bar: 'foo'
 
-    it 'should ingore multiple keys', ->
-      qs = new MongoQS ignore: foo: true, bar: true
+    it 'should blacklist multiple keys', ->
+      qs = new MongoQS blacklist: foo: true, bar: true
       assert.deepEqual qs.parse({foo: 'bar', bar: 'foo', baz: 'bax'}), baz: 'bax'
 
   describe 'custom', ->

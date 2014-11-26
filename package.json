@@ -41,5 +41,8 @@
   "devDependencies": {
     "coffee-script": "^1.8.0",
     "mocha": "^1.21.4"
+  },
+  "dependencies": {
+    "depd": "1.0.0"
   }
 }

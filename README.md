@@ -9,7 +9,7 @@ useful when building an API and accepting various user specificed queries.
 ## Features
 
 * Aliased query parameters
-* Ignored query parameters
+* Blacklisted query parameters
 * Basic operators
   * `$ne`
   * `$gt`
@@ -37,7 +37,7 @@ var MongoQS = require('mongo-querystring');
 
 * `Array` ops - list of supported operators
 * `object` alias - query param aliases
-* `object` ignore - ignored query params
+* `object` blacklist - blacklisted query params
 * `object` custom - custom query params
 
 #### Bult in custom queries
