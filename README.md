@@ -80,3 +80,5 @@ mongo.collection('mycol').find(query, field).toArray(function(err, documents) {
 });
 ```
 
+## [MIT Licensed](https://raw.githubusercontent.com/Turistforeningen/node-mongo-querystring/master/LICENSE)
+
