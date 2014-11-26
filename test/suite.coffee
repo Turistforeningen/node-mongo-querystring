@@ -155,6 +155,15 @@ describe 'parse()', ->
       qs = new MongoQS blacklist: foo: true, bar: true
       assert.deepEqual qs.parse({foo: 'bar', bar: 'foo', baz: 'bax'}), baz: 'bax'
 
+  describe 'whitelisting', ->
+    it 'should allow key', ->
+      qs = new MongoQS whitelist: foo: true
+      assert.deepEqual qs.parse({foo: 'bar', bar: 'foo', baz: 'bax'}), foo: 'bar'
+
+    it 'should allow multiple keys', ->
+      qs = new MongoQS whitelist: foo: true, bar: true
+      assert.deepEqual qs.parse({foo: 'bar', bar: 'foo', baz: 'bax'}), foo: 'bar', bar: 'foo'
+
   describe 'custom', ->
     it 'should enable built in bbox handler', ->
       qs = new MongoQS custom: bbox: 'geojson'

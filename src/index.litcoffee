@@ -6,6 +6,7 @@
       @ops = opts?.ops or ['!', '^', '$', '~', '>', '<']
       @alias = opts?.alias or {}
       @blacklist = opts?.blacklist or {}
+      @whitelist = opts?.whitelist or {}
       @custom = opts?.custom or {}
 
       for param, field of @custom
@@ -83,6 +84,7 @@ Main query param parser method which follows the following order of operations.
       res = {}
 
       for key, val of query
+        continue if Object.keys(@whitelist).length and not @whitelist[key]
         continue if @blacklist[key]
         continue if typeof val isnt 'string'
         continue if not /^[a-zæøå0-9-_.]+$/i.test key

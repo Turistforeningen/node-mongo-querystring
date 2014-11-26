@@ -10,6 +10,7 @@ useful when building an API and accepting various user specificed queries.
 
 * Aliased query parameters
 * Blacklisted query parameters
+* Whitelisted query parameters
 * Basic operators
   * `$ne`
   * `$gt`
@@ -38,6 +39,7 @@ var MongoQS = require('mongo-querystring');
 * `Array` ops - list of supported operators
 * `object` alias - query param aliases
 * `object` blacklist - blacklisted query params
+* `object` whitelist - whitelisted query params
 * `object` custom - custom query params
 
 #### Bult in custom queries
