@@ -31,6 +31,9 @@
     "email": "hans.kristian.flaatten@dnt.no",
     "url": "https://github.com/starefossen"
   },
+  "engines": {
+    "node": ">=0.10"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Turistforeningen/node-mongo-querystring/issues"
