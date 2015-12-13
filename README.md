@@ -15,11 +15,14 @@ useful when building an API and accepting various user specificed queries.
 * Blacklisted query parameters
 * Whitelisted query parameters
 * Basic operators
-  * `$ne`
+  * `$eq`
   * `$gt`
   * `$lt`
-  * `$regex`
+  * `$ne`
+  * `$in`
+  * `$nin`
   * `$exists`
+  * `$regex`
 
 | operation | query string  | query object |
 |-----------|---------------|--------------|
@@ -32,6 +35,8 @@ useful when building an API and accepting various user specificed queries.
 | starts with | `?foo=^bar` | `{ foo: { $regex: "^foo", $options: "i" }}` |
 | ends with | `?foo=$bar`   | `{ foo: { $regex: "foo$", $options: "i" }}` |
 | contains  | `?foo=~bar`   | `{ foo: { $regex: "foo", $options: "i" }}` |
+| in array  | `?foo[]=bar&foo[]=baz` | `{ foo: { $in: ['bar', 'baz'] }}` |
+| not in array | `?foo[]=!bar&foo[]=!baz` | `{ foo: { $nin: ['bar', 'baz'] }}` |
 
 * Geospatial operators
   * `$geoWithin` (polygon)
