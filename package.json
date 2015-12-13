@@ -13,6 +13,7 @@
     "test": "test"
   },
   "scripts": {
+    "lint": "jshint index.js test.js",
     "watch": "mocha -w -b -c --check-leaks -R progress test.js",
     "test": "mocha -b -c --check-leaks -R spec test.js"
   },
@@ -36,6 +37,7 @@
   },
   "homepage": "https://github.com/Turistforeningen/node-mongo-querystring",
   "devDependencies": {
+    "jshint": "^2.8.0",
     "mocha": "^2.3.4"
   }
 }
