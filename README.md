@@ -76,6 +76,16 @@ var MongoQS = require('mongo-querystring');
 * `near` - proximity geostatial query
 * `after` - modified since query
 
+```javascript
+var qs = new MongoQS({
+  custom: {
+    bbox: 'geojson',        // your geometry field
+    near: 'geojson',        // your geometry field
+    after: 'updated_on'     // your last modified field
+  }
+});
+```
+
 #### Define custom queries
 
 Custom queries are on the folling form; you define the URL query parameter name
