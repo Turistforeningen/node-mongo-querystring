@@ -287,22 +287,69 @@ describe('parse()', function() {
       });
     });
 
-    it('returns multiple querys', function() {
-      query = qs.parse({
-        foo: '',
-        bar: '!foo',
-        '%foo': 'bar',
-        'bix.bax': 'that',
-        'foo-bar': 'bar-foo'
+    describe('$in / $nin operator', function() {
+      it('returns in array query', function() {
+        var string = 'foo[]=10&foo[]=10.011&foo[]=bar';
+        var params = require('querystring').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          foo: {
+            $in: [10, 10.011, 'bar']
+          }
+        });
       });
 
-      assert.deepEqual(query, {
-        foo: {
-          $exists: true
-        },
-        bar: {
-          $ne: 'foo'
-        },
+      it('returns in array without any not in array query', function() {
+        var string = 'foo[]=10&foo[]=!10.011&foo[]=!bar&foo[]=baz';
+        var params = require('querystring').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          foo: {
+            $in: [10, 'baz']
+          }
+        });
+      });
+
+      it('returns not in array query', function() {
+        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar';
+        var params = require('querystring').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          foo: {
+            $nin: [10, 10.011, 'bar']
+          }
+        });
+      });
+
+      it('returns not in array without any in array query', function() {
+        var string = 'foo[]=!10&foo[]=10.011&foo[]=bar&foo[]=!baz';
+        var params = require('querystring').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          foo: {
+            $nin: [10, 'baz']
+          }
+        });
+      });
+    });
+
+    it('returns multiple querys', function() {
+      var string = [
+        'foo=',
+        'bar=!',
+        'baz=!foo',
+        'bix=bez',
+        '%foo=bar',
+        'bix.bax=that',
+        'foo-bar=bar-foo'
+      ].join('&&');
+      var params = require('querystring').parse(string);
+
+      assert.deepEqual(qs.parse(params), {
+        foo: { $exists: true },
+        bar: { $exists: false },
+        baz: { $ne: 'foo' },
+        bix: 'bez',
         'bix.bax': 'that',
         'foo-bar': 'bar-foo'
       });
