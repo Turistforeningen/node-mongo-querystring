@@ -1,6 +1,6 @@
 {
   "name": "mongo-querystring",
-  "version": "1.0.0",
+  "version": null,
   "description": "Parse and pass URL queries to MongoDB query",
   "repository": {
     "type": "git",
@@ -15,7 +15,8 @@
   "scripts": {
     "lint": "jshint index.js test.js",
     "watch": "mocha -w -b -c --check-leaks -R progress test.js",
-    "test": "mocha -b -c --check-leaks -R spec test.js"
+    "test": "mocha -b -c --check-leaks -R spec test.js",
+    "semantic-release": "semantic-release"
   },
   "keywords": [
     "query",
@@ -41,6 +42,7 @@
   "homepage": "https://github.com/Turistforeningen/node-mongo-querystring",
   "devDependencies": {
     "jshint": "^2.8.0",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "semantic-release": "^4.3.5"
   }
 }
