@@ -1,10 +1,10 @@
 # MongoDB QueryString
 
 [![Build status](https://img.shields.io/wercker/ci/566dca6762f42c407207777a.svg "Build status")](https://app.wercker.com/project/bykey/a31eed21b34f26d9b7af766b4614c260)
-[![NPM downloads](https://img.shields.io/npm/dm/mongo-query.svg "NPM downloads")](https://www.npmjs.com/package/mongo-query)
-[![NPM version](https://img.shields.io/npm/v/mongo-query.svg "NPM version")](https://www.npmjs.com/package/mongo-query)
-[![Node version](https://img.shields.io/node/v/mongo-query.svg "Node version")](https://www.npmjs.com/package/mongo-query)
-[![Dependency status](https://img.shields.io/david/turistforeningen/node-mongo-query.svg "Dependency status")](https://david-dm.org/turistforeningen/node-mongo-query)
+[![NPM downloads](https://img.shields.io/npm/dm/mongo-querystring.svg "NPM downloads")](https://www.npmjs.com/package/mongo-querystring)
+[![NPM version](https://img.shields.io/npm/v/mongo-querystring.svg "NPM version")](https://www.npmjs.com/package/mongo-querystring)
+[![Node version](https://img.shields.io/node/v/mongo-querystring.svg "Node version")](https://www.npmjs.com/package/mongo-querystring)
+[![Dependency status](https://img.shields.io/david/turistforeningen/node-mongo-querystring.svg "Dependency status")](https://david-dm.org/turistforeningen/node-mongo-querystring)
 
 Accept MongoDB query parameters through URI queries safe and easy. This is
 useful when building an API and accepting various user specificed queries.
