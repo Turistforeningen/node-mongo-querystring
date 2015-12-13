@@ -1,4 +1,4 @@
-box: node:0.10-slim
+box: node:0.10
 
 build:
   steps:
