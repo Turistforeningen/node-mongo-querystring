@@ -1,25 +1,45 @@
 box: node:0.10
 
 build:
-  steps:
-    - script:
-        name: echo nodejs information
-        code: |
-          echo "node version $(node -v) running"
-          echo "npm version $(npm -v) running"
+    steps:
+        - script:
+            name: echo nodejs information
+            code: |
+                echo "node version $(node -v) running"
+                echo "npm version $(npm -v) running"
 
-    - npm-install
+        - npm-install
 
-    - script:
-        name: lint
-        code: npm run lint
+        - script:
+            name: lint
+            code: npm run lint
 
-    - npm-test
+        - npm-test
 
-  after-steps:
-    - turistforeningen/slack-notifier:
-        url: $SLACK_WEBHOOK_URL
+    after-steps:
+        - turistforeningen/slack-notifier:
+            url: $SLACK_WEBHOOK_URL
 
 deploy:
-  steps:
-    - turistforeningen/npm-publish
+    steps:
+        # Reinstall node_modules to fix broken symlinks
+        # https://github.com/wercker/docs/issues/310
+        - script:
+            name: rm node_modules
+            code: rm -rf node_modules
+
+        - npm-install
+
+        - script:
+            name: semantic release pre
+            code: npm run semantic-release -- pre
+
+        - turistforeningen/npm-publish
+
+        - script:
+            name: semantic release post
+            code: npm run semantic-release -- post
+
+    after-steps:
+        - turistforeningen/slack-notifier:
+            url: $SLACK_WEBHOOK_URL
