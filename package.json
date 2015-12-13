@@ -4,7 +4,7 @@
   "description": "Parse and pass URL queries to MongoDB query",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Turistforeningen/node-mongo-querystring.git"
+    "url": "git+https://github.com/Turistforeningen/node-mongo-querystring.git"
   },
   "main": "lib/index.js",
   "directories": {
