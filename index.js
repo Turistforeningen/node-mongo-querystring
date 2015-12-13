@@ -4,11 +4,14 @@
 module.exports = function MongoQS(opts) {
   opts = opts || {};
 
-  this.ops = opts.ops || ['!', '^', '$', '~', '>', '<'];
+  this.ops = opts.ops || ['!', '^', '$', '~', '>', '<', '$in'];
   this.alias = opts.alias || {};
   this.blacklist = opts.blacklist || {};
   this.whitelist = opts.whitelist || {};
   this.custom = opts.custom || {};
+
+  this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
+  this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+\[\]$/i;
 
   for (var param in this.custom) {
     switch (param) {
@@ -104,24 +107,55 @@ module.exports.prototype.parse = function(query) {
   for (var key in query) {
     val = query[key];
 
+    // whitelist
     if (Object.keys(this.whitelist).length && !this.whitelist[key]) {
       continue;
     }
 
+    // blacklist
     if (this.blacklist[key]) {
+      continue;
+    }
+
+    // alias
+    if (this.alias[key]) {
+      key = this.alias[key];
+    }
+
+    // string key
+    if (typeof val === 'string' && !this.keyRegex.test(key)) {
+      continue;
+    }
+
+    // array key
+    if (val instanceof Array && this.arrRegex.test(key)) {
+      if (this.ops.indexOf('$in') >= 0) {
+        key = key.substr(0, key.length-2);
+
+        // $in query
+        if (val[0][0] !== '!') {
+          res[key] = {$in: val.filter(function(element) {
+            return element[0] !== '!';
+          }).map(function(element) {
+            return isNaN(element) ? element : parseFloat(element, 10);
+          })};
+
+        // $nin query
+        } else {
+          res[key] = {$nin: val.filter(function(element) {
+            return element[0] === '!';
+          }).map(function(element) {
+            element = element.substr(1);
+            return isNaN(element) ? element : parseFloat(element, 10);
+          })};
+        }
+      }
+
       continue;
     }
 
     if (typeof val !== 'string') {
       continue;
-    }
-
-    if (!/^[a-zæøå0-9-_.]+$/i.test(key)) {
-      continue;
-    }
-
-    if (this.alias[key]) {
-      key = this.alias[key];
     }
 
     if (typeof this.custom[key] === 'function') {
