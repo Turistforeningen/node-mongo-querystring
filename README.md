@@ -1,7 +1,10 @@
-MongoDB QueryString [![Build Status](https://drone.io/github.com/Turistforeningen/node-mongo-querystring/status.png)](https://drone.io/github.com/Turistforeningen/node-mongo-querystring/latest)
-=====================
+# MongoDB QueryString
 
-[![NPM](https://nodei.co/npm/mongo-querystring.png?downloads=true)](https://www.npmjs.org/package/mongo-querystring)
+[![Build status](https://img.shields.io/wercker/ci/566dca6762f42c407207777a.svg "Build status")](https://app.wercker.com/project/bykey/a31eed21b34f26d9b7af766b4614c260)
+[![NPM downloads](https://img.shields.io/npm/dm/mongo-query.svg "NPM downloads")](https://www.npmjs.com/package/mongo-query)
+[![NPM version](https://img.shields.io/npm/v/mongo-query.svg "NPM version")](https://www.npmjs.com/package/mongo-query)
+[![Node version](https://img.shields.io/node/v/mongo-query.svg "Node version")](https://www.npmjs.com/package/mongo-query)
+[![Dependency status](https://img.shields.io/david/turistforeningen/node-mongo-query.svg "Dependency status")](https://david-dm.org/turistforeningen/node-mongo-query)
 
 Accept MongoDB query parameters through URI queries safe and easy. This is
 useful when building an API and accepting various user specificed queries.
