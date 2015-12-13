@@ -17,10 +17,35 @@ useful when building an API and accepting various user specificed queries.
   * `$lt`
   * `$regex`
   * `$exists`
+
+| operation | query string  | query object |
+|-----------|---------------|--------------|
+| equal     | `?foo=bar`    | `{ foo: "bar" }` |
+| unequal   | `?foo=!bar`   | `{ foo: { $ne: "bar" }}` |
+| exists    | `?foo=`       | `{ foo: { $exists: true }}` |
+| not exists | `?foo=!`     | `{ foo: { $exists: false }}` |
+| greater than | `?foo=>10` | `{ foo: { $gt: 10 }}` |
+| less than | `?foo=<10`    | `{ foo: { $lt: 10 }}` |
+| starts with | `?foo=^bar` | `{ foo: { $regex: "^foo", $options: "i" }}` |
+| ends with | `?foo=$bar`   | `{ foo: { $regex: "foo$", $options: "i" }}` |
+| contains  | `?foo=~bar`   | `{ foo: { $regex: "foo", $options: "i" }}` |
+
 * Geospatial operators
-  * `$geoWithin`
-  * `$near`
+  * `$geoWithin` (polygon)
+  * `$near` (point)
+
+| operation | query string  | query object |
+|-----------|---------------|--------------|
+| bbox | `?bbox=~0,1,2,3` | `{ geojson: { $geoWithin: { $geometry: { … } } } }` |
+| near | `?near=~0,1` | `{ geojson: { $near: { $geometry: { … } } } }` |
+
 * Custom query functions
+  * `after` (date)
+
+| operation | query string  | query object |
+|-----------|---------------|--------------|
+| after | `?after=2014-01-01` | `{ endret: { $gte: "2014-01-01T00:00:00.000Z" } }` |
+| after | `?after=1388534400` | `{ endret: { $gte: "2014-01-01T00:00:00.000Z" } }` |
 
 ## Install
 
@@ -44,8 +69,8 @@ var MongoQS = require('mongo-querystring');
 
 #### Bult in custom queries
 
-* `bbox` - bounding box query
-* `near` - proximity query
+* `bbox` - bounding box geostatial query
+* `near` - proximity geostatial query
 * `after` - modified since query
 
 #### Define custom queries
@@ -81,4 +106,3 @@ mongo.collection('mycol').find(query, field).toArray(function(err, documents) {
 ```
 
 ## [MIT Licensed](https://raw.githubusercontent.com/Turistforeningen/node-mongo-querystring/master/LICENSE)
-
