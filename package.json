@@ -13,11 +13,8 @@
     "test": "test"
   },
   "scripts": {
-    "build": "coffee --bare --compile --output lib/ src/*",
-    "prepublish": "coffee --bare --compile --output lib/ src/*",
-    "postpublish": "rm -rf lib/*",
-    "test": "mocha -w -b -c --check-leaks test/suite.coffee -R progress --compilers coffee:coffee-script/register",
-    "test-drone": "node_modules/.bin/mocha -b -c --check-leaks test/suite.coffee -R spec --compilers coffee:coffee-script/register"
+    "watch": "mocha -w -b -c --check-leaks -R progress test.js",
+    "test": "mocha -b -c --check-leaks -R spec test.js"
   },
   "keywords": [
     "query",
@@ -39,10 +36,6 @@
   },
   "homepage": "https://github.com/Turistforeningen/node-mongo-querystring",
   "devDependencies": {
-    "coffee-script": "^1.8.0",
-    "mocha": "^1.21.4"
-  },
-  "dependencies": {
-    "depd": "1.0.0"
+    "mocha": "^2.3.4"
   }
 }
