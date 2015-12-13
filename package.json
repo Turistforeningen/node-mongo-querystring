@@ -1,6 +1,6 @@
 {
   "name": "mongo-querystring",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Parse and pass URL queries to MongoDB query",
   "repository": {
     "type": "git",
