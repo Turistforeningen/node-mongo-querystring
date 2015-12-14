@@ -128,7 +128,7 @@ module.exports.prototype.parse = function(query) {
     }
 
     // array key
-    if (val instanceof Array && this.arrRegex.test(key)) {
+    if (val instanceof Array && this.keyRegex.test(key)) {
       if (this.ops.indexOf('$in') >= 0) {
         key = key.substr(0, key.length-2);
 
