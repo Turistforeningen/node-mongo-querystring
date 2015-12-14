@@ -299,6 +299,17 @@ describe('parse()', function() {
         });
       });
 
+      it('returns in array query with "qs" parser module (GH-06)', function() {
+        var string = 'foo[]=10&foo[]=10.011&foo[]=bar';
+        var params = require('qs').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          foo: {
+            $in: [10, 10.011, 'bar']
+          }
+        });
+      });
+
       it('returns in array without any not in array query', function() {
         var string = 'foo[]=10&foo[]=!10.011&foo[]=!bar&foo[]=baz';
         var params = require('querystring').parse(string);
@@ -320,6 +331,18 @@ describe('parse()', function() {
           }
         });
       });
+
+      it('returns not in array query with "gs" parser module (GH-06)', function() {
+        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar';
+        var params = require('qs').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          foo: {
+            $nin: [10, 10.011, 'bar']
+          }
+        });
+      });
+
 
       it('returns not in array without any in array query', function() {
         var string = 'foo[]=!10&foo[]=10.011&foo[]=bar&foo[]=!baz';
