@@ -333,6 +333,52 @@ describe('parse()', function() {
       });
     });
 
+    describe('$or operator', function() {
+      it('returns query for simple $or operator', function() {
+        var string = 'foo=bar||bar=foo';
+        var params = require('querystring').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          $or: [
+            { foo: 'bar' },
+            { bar: 'foo' }
+          ]
+        });
+      });
+
+      it('returns multiple $or elements', function() {
+        var string = 'foo=bar||bar=foo||baz=bix';
+        var params = require('querystring').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          $or: [
+            { foo: 'bar' },
+            { bar: 'foo' },
+            { baz: 'bix' }
+          ]
+        });
+      });
+
+      it.only('returns nested $or queries', function() {
+        var string = 'foo=bar||bar=foo&&bix=bax||baz=bez';
+        var params = require('querystring').parse(string);
+
+        assert.deepEqual(qs.parse(params), {
+          $and: [{
+            $or: [
+              { foo: 'bar' },
+              { bar: 'foo' },
+            ]
+          },{
+            $or: [
+              { bix: 'bax' },
+              { baz: 'bez' },
+            ]
+          }]
+        });
+      });
+    });
+
     it('returns multiple querys', function() {
       var string = [
         'foo=',

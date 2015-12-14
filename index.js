@@ -1,6 +1,8 @@
 /*jshint loopfunc: true */
 'use strict';
 
+var qs = require('querystring');
+
 module.exports = function MongoQS(opts) {
   opts = opts || {};
 
@@ -106,6 +108,39 @@ module.exports.prototype.parse = function(query) {
 
   for (var key in query) {
     val = query[key];
+
+    var $or = qs.parse(key + '=' + val, '||');
+    if (Object.keys($or).length > 1) {
+      if (res['$and']) {
+        var key = '$and';
+
+      } else if (res['$or']) {
+        var key = '$and';
+
+        res['$and'] = [{$or: res['$or']}];
+        delete res['$or'];
+
+      } else {
+        var key = '$or';
+        res['$or'] = [];
+      }
+
+      if (key == '$and') {
+        res['$and'].push({$or: Object.keys($or).map(function(k) {
+          var t = {}; t[k] = $or[k];
+          return t;
+        })});
+      } else {
+        res['$or'] = Object.keys($or).map(function(k) {
+          var t = {}; t[k] = $or[k];
+          return t;
+        });
+      }
+
+      console.log(key, res[key]);
+
+      continue;
+    }
 
     // whitelist
     if (Object.keys(this.whitelist).length && !this.whitelist[key]) {
