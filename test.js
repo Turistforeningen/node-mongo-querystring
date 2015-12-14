@@ -299,7 +299,7 @@ describe('parse()', function() {
         });
       });
 
-      it('returns in array query with "qs" parser module (GH-06)', function() {
+      it('returns in array query with "qs" parser (GH-06)', function() {
         var string = 'foo[]=10&foo[]=10.011&foo[]=bar';
         var params = require('qs').parse(string);
 
@@ -332,7 +332,7 @@ describe('parse()', function() {
         });
       });
 
-      it('returns not in array query with "gs" parser module (GH-06)', function() {
+      it('returns not in array query with "gs" parser (GH-06)', function() {
         var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar';
         var params = require('qs').parse(string);
 
