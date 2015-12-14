@@ -44,8 +44,8 @@ useful when building an API and accepting various user specificed queries.
 
 | operation | query string  | query object |
 |-----------|---------------|--------------|
-| bbox | `?bbox=~0,1,2,3` | `{ geojson: { $geoWithin: { $geometry: { … } } } }` |
-| near | `?near=~0,1` | `{ geojson: { $near: { $geometry: { … } } } }` |
+| bbox | `?bbox=0,1,2,3` | `{ geojson: { $geoWithin: { $geometry: { … } } } }` |
+| near | `?near=0,1` | `{ geojson: { $near: { $geometry: { … } } } }` |
 
 * Custom query functions
   * `after` (date)
