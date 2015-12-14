@@ -11,7 +11,7 @@ module.exports = function MongoQS(opts) {
   this.custom = opts.custom || {};
 
   this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
-  this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+\[\]$/i;
+  this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[\])?$/i;
 
   for (var param in this.custom) {
     switch (param) {
@@ -129,8 +129,9 @@ module.exports.prototype.parse = function(query) {
 
     // array key
     if (val instanceof Array && this.arrRegex.test(key)) {
-      if (this.ops.indexOf('$in') >= 0) {
-        key = key.substr(0, key.length-2);
+      if (this.ops.indexOf('$in') >= 0 && val.length > 0) {
+        // remove [] at end of key name (unless it has already been removed)
+        key = key.replace(/\[\]$/, '');
 
         // $in query
         if (val[0][0] !== '!') {

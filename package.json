@@ -43,6 +43,7 @@
   "devDependencies": {
     "jshint": "^2.8.0",
     "mocha": "^2.3.4",
+    "qs": "^5.2.0",
     "semantic-release": "^4.3.5"
   }
 }

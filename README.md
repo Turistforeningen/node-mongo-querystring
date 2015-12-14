@@ -32,9 +32,9 @@ useful when building an API and accepting various user specificed queries.
 | not exists | `?foo=!`     | `{ foo: { $exists: false }}` |
 | greater than | `?foo=>10` | `{ foo: { $gt: 10 }}` |
 | less than | `?foo=<10`    | `{ foo: { $lt: 10 }}` |
-| starts with | `?foo=^bar` | `{ foo: { $regex: "^foo", $options: "i" }}` |
-| ends with | `?foo=$bar`   | `{ foo: { $regex: "foo$", $options: "i" }}` |
-| contains  | `?foo=~bar`   | `{ foo: { $regex: "foo", $options: "i" }}` |
+| starts with | `?foo=^bar` | `{ foo: { $regex: "^bar", $options: "i" }}` |
+| ends with | `?foo=$bar`   | `{ foo: { $regex: "bar$", $options: "i" }}` |
+| contains  | `?foo=~bar`   | `{ foo: { $regex: "bar", $options: "i" }}` |
 | in array  | `?foo[]=bar&foo[]=baz` | `{ foo: { $in: ['bar', 'baz'] }}` |
 | not in array | `?foo[]=!bar&foo[]=!baz` | `{ foo: { $nin: ['bar', 'baz'] }}` |
 
@@ -44,8 +44,8 @@ useful when building an API and accepting various user specificed queries.
 
 | operation | query string  | query object |
 |-----------|---------------|--------------|
-| bbox | `?bbox=~0,1,2,3` | `{ geojson: { $geoWithin: { $geometry: { … } } } }` |
-| near | `?near=~0,1` | `{ geojson: { $near: { $geometry: { … } } } }` |
+| bbox | `?bbox=0,1,2,3` | `{ geojson: { $geoWithin: { $geometry: { … } } } }` |
+| near | `?near=0,1` | `{ geojson: { $near: { $geometry: { … } } } }` |
 
 * Custom query functions
   * `after` (date)
