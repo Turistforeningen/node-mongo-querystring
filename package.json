@@ -13,9 +13,9 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "jshint index.js test.js",
-    "watch": "mocha -w -b -c --check-leaks -R progress test.js",
-    "test": "mocha -b -c --check-leaks -R spec test.js",
+    "lint": "jshint *.js examples",
+    "watch": "mocha -w -b -c --check-leaks -R progress test.js examples/test.js",
+    "test": "mocha -b -c --check-leaks -R spec test.js examples/test.js",
     "semantic-release": "semantic-release"
   },
   "keywords": [
@@ -41,9 +41,13 @@
   },
   "homepage": "https://github.com/Turistforeningen/node-mongo-querystring",
   "devDependencies": {
+    "JSONStream": "^1.0.7",
+    "express": "^4.13.3",
     "jshint": "^2.8.0",
     "mocha": "^2.3.4",
+    "mongodb": "^2.0.52",
     "qs": "^5.2.0",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^4.3.5",
+    "supertest": "^1.1.0"
   }
 }

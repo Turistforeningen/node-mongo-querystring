@@ -1,0 +1,37 @@
+[{
+  "name": "Solrenningen",
+  "geojson": {
+    "type": "Point",
+    "coordinates": [6.13037, 61.00607]
+  }
+},{
+  "name": "Norddalshytten",
+  "geojson": {
+    "type": "Point",
+    "coordinates": [5.99579, 61.01340]
+  }
+},{
+  "name": "Åsedalen",
+  "geojson": {
+    "type": "Point",
+    "coordinates": [6.22032, 60.96244]
+  }
+},{
+  "name": "Vatnane",
+  "geojson": {
+    "type": "Point",
+    "coordinates": [6.32607, 61.02105]
+  }
+},{
+  "name": "Selhamar",
+  "geojson": {
+    "type": "Point",
+    "coordinates": [6.26495, 60.91275]
+  }
+},{
+  "name": "Vardadalsbu",
+  "geojson": {
+    "type": "Point",
+    "coordinates": [5.89279, 60.94477]
+  }
+}]
