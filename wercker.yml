@@ -1,5 +1,8 @@
 box: node:0.10
 
+services:
+    - mongo:latest
+
 build:
     steps:
         - script:

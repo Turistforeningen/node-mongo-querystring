@@ -1,5 +1,10 @@
+mongo:
+    image: mongo:latest
+
 dev:
   image: node:0.10-slim
+  links:
+    - mongo
   working_dir: /usr/src/app
   volumes:
     - ".:/usr/src/app"
