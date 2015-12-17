@@ -75,4 +75,16 @@ describe('Example App', function() {
       })
       .end(done);
   });
+
+  it('returns palces with any of the following tags', function(done) {
+    app.get(url + '?tags[]=Båt&tags[]=Stekeovn')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 3);
+        assert.equal(res.body[0].name, 'Solrenningen');
+        assert.equal(res.body[1].name, 'Åsedalen');
+        assert.equal(res.body[2].name, 'Selhamar');
+      })
+      .end(done);
+  });
 });
