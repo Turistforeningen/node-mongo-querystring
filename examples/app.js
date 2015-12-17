@@ -4,6 +4,8 @@ var express = require('express');
 var app = module.exports = express();
 
 var MongoQS = require('../index');
+
+// Create a new Mongo QueryString parser
 var qs = new MongoQS({
   custom: {
     bbox: 'geojson',
@@ -14,6 +16,7 @@ var qs = new MongoQS({
 app.get('/api/places', function(req, res) {
   res.set('Content-Type', 'application/json');
 
+  // Parse the request query parameters
   var query = qs.parse(req.query);
   var collection = require('./db').db.collection('places');
   var cursor = collection.find(query).limit(3);
