@@ -28,6 +28,7 @@ useful when building an API and accepting various user specificed queries.
 |-----------|---------------|--------------|
 | equal     | `?foo=bar`    | `{ foo: "bar" }` |
 | unequal   | `?foo=!bar`   | `{ foo: { $ne: "bar" }}` |
+| boolean   | `?foo=:true`  | `{ foo: true }` |
 | exists    | `?foo=`       | `{ foo: { $exists: true }}` |
 | not exists | `?foo=!`     | `{ foo: { $exists: false }}` |
 | greater than | `?foo=>10` | `{ foo: { $gt: 10 }}` |

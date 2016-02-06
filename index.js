@@ -4,7 +4,7 @@
 module.exports = function MongoQS(opts) {
   opts = opts || {};
 
-  this.ops = opts.ops || ['!', '^', '$', '~', '>', '<', '$in'];
+  this.ops = opts.ops || ['!', '^', '$', '~', '>', '<', '$in', ':'];
   this.alias = opts.alias || {};
   this.blacklist = opts.blacklist || {};
   this.whitelist = opts.whitelist || {};
@@ -176,6 +176,13 @@ module.exports.prototype.parse = function(query) {
               return { $ne: isNaN(val) ? val : parseFloat(val, 10) };
             } else {
               return { $exists: false };
+            }
+            break;
+          case ':': 
+            if(val == "false") {
+              return false;
+            } else {
+              return true;
             }
             break;
           case '>':
