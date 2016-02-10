@@ -352,23 +352,23 @@ describe('parse()', function() {
 
     describe('$in / $nin operator', function() {
       it('returns in array query', function() {
-        var string = 'foo[]=10&foo[]=10.011&foo[]=bar';
+        var string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
         var params = require('querystring').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $in: [10, 10.011, 'bar']
+            $in: [10, 10.011, 'bar', true]
           }
         });
       });
 
       it('returns in array query with "qs" parser (GH-06)', function() {
-        var string = 'foo[]=10&foo[]=10.011&foo[]=bar';
+        var string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
         var params = require('qs').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $in: [10, 10.011, 'bar']
+            $in: [10, 10.011, 'bar', true]
           }
         });
       });
@@ -385,23 +385,23 @@ describe('parse()', function() {
       });
 
       it('returns not in array query', function() {
-        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar';
+        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
         var params = require('querystring').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $nin: [10, 10.011, 'bar']
+            $nin: [10, 10.011, 'bar', false]
           }
         });
       });
 
       it('returns not in array query with "gs" parser (GH-06)', function() {
-        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar';
+        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
         var params = require('qs').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $nin: [10, 10.011, 'bar']
+            $nin: [10, 10.011, 'bar', false]
           }
         });
       });
