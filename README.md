@@ -76,6 +76,9 @@ var MongoQS = require('mongo-querystring');
 * `object` blacklist - blacklisted query params
 * `object` whitelist - whitelisted query params
 * `object` custom - custom query params
+* `object` string - string parsing
+  * `boolean` toBoolean - parse `"true"`, `"false"` string to booleans
+  * `boolean` toNumber - parse string integer and float values to numbers
 
 #### Bult in custom queries
 

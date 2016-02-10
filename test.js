@@ -105,12 +105,27 @@ describe('parseString()', function() {
     assert.equal(qs.parseString('true'), true);
   });
 
+  it('returns string "true" when boolean parsing is disabled', function() {
+    qs.string.toBoolean = false;
+    assert.equal(qs.parseString('true'), 'true');
+  });
+
   it('returns boolean false for "flase" string', function() {
     assert.equal(qs.parseString('false'), false);
   });
 
+  it('returns string "false" when boolean parsing is disabled', function() {
+    qs.string.toBoolean = false;
+    assert.equal(qs.parseString('false'), 'false');
+  });
+
   it('returns number for parseable integer', function() {
     assert.equal(qs.parseString('100'), 100);
+  });
+
+  it('returns string number when number parsing is disabled', function() {
+    qs.string.toNumber = false;
+    assert.equal(qs.parseString('100'), '100');
   });
 
   it('returns number for zero padded parseable integer', function() {

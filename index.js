@@ -10,6 +10,12 @@ module.exports = function MongoQS(opts) {
   this.whitelist = opts.whitelist || {};
   this.custom = opts.custom || {};
 
+  // String Value Parsing
+  opts.string = opts.string || {};
+  this.string = opts.string || {};
+  this.string.toBoolean = opts.string.toBoolean || true;
+  this.string.toNumber = opts.string.toNumber || true;
+
   this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
   this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[\])?$/i;
 
@@ -101,11 +107,11 @@ module.exports.prototype.customAfter = function(field) {
 };
 
 module.exports.prototype.parseString = function(string) {
-  if (string.toLowerCase() === 'true') {
+  if (this.string.toBoolean && string.toLowerCase() === 'true') {
     return true;
-  } else if (string.toLowerCase() === 'false') {
+  } else if (this.string.toBoolean && string.toLowerCase() === 'false') {
     return false;
-  } else if (!isNaN(string)) {
+  } else if (this.string.toNumber && !isNaN(string)) {
     return parseFloat(string, 10);
   } else {
     return string;
