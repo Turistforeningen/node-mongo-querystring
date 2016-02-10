@@ -23,6 +23,8 @@ useful when building an API and accepting various user specificed queries.
   * `$nin`
   * `$exists`
   * `$regex`
+* Parse string integers and floats to numbers
+* Parse string boolean to ture/false booleans
 
 | operation | query string  | query object |
 |-----------|---------------|--------------|

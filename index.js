@@ -101,7 +101,11 @@ module.exports.prototype.customAfter = function(field) {
 };
 
 module.exports.prototype.parseString = function(string) {
-  if (!isNaN(string)) {
+  if (string.toLowerCase() === 'true') {
+    return true;
+  } else if (string.toLowerCase() === 'false') {
+    return false;
+  } else if (!isNaN(string)) {
     return parseFloat(string, 10);
   } else {
     return string;
