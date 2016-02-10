@@ -79,6 +79,8 @@ var MongoQS = require('mongo-querystring');
 * `object` string - string parsing
   * `boolean` toBoolean - parse `"true"`, `"false"` string to booleans (default: `true`)
   * `boolean` toNumber - parse string integer and float values to numbers (default: `true`)
+* `regexp` keyRegex - allowed key names (default: `/^[a-zæøå0-9-_.]+$/i`)
+* `regexp` arrRegex - allowed array key names (default: `/^[a-zæøå0-9-_.]+(\[\])?$/i`)
 
 #### Bult in custom queries
 
