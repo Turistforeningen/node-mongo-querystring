@@ -71,14 +71,14 @@ var MongoQS = require('mongo-querystring');
 
 ### new MongoQS(`object` options)
 
-* `Array` ops - list of supported operators
-* `object` alias - query param aliases
-* `object` blacklist - blacklisted query params
-* `object` whitelist - whitelisted query params
-* `object` custom - custom query params
+* `Array` ops - list of supported operators (default: `['!', '^', '$', '~', '>', '<', '$in']`)
+* `object` alias - query param aliases (default: `{}`)
+* `object` blacklist - blacklisted query params (default: `{}`)
+* `object` whitelist - whitelisted query params (default: `{}`)
+* `object` custom - custom query params (default: `{}`)
 * `object` string - string parsing
-  * `boolean` toBoolean - parse `"true"`, `"false"` string to booleans
-  * `boolean` toNumber - parse string integer and float values to numbers
+  * `boolean` toBoolean - parse `"true"`, `"false"` string to booleans (default: `true`)
+  * `boolean` toNumber - parse string integer and float values to numbers (default: `true`)
 
 #### Bult in custom queries
 
