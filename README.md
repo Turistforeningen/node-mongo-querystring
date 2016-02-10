@@ -23,6 +23,8 @@ useful when building an API and accepting various user specificed queries.
   * `$nin`
   * `$exists`
   * `$regex`
+* Parse string integers and floats to numbers
+* Parse string boolean to ture/false booleans
 
 | operation | query string  | query object |
 |-----------|---------------|--------------|
@@ -69,11 +71,16 @@ var MongoQS = require('mongo-querystring');
 
 ### new MongoQS(`object` options)
 
-* `Array` ops - list of supported operators
-* `object` alias - query param aliases
-* `object` blacklist - blacklisted query params
-* `object` whitelist - whitelisted query params
-* `object` custom - custom query params
+* `Array` ops - list of supported operators (default: `['!', '^', '$', '~', '>', '<', '$in']`)
+* `object` alias - query param aliases (default: `{}`)
+* `object` blacklist - blacklisted query params (default: `{}`)
+* `object` whitelist - whitelisted query params (default: `{}`)
+* `object` custom - custom query params (default: `{}`)
+* `object` string - string parsing
+  * `boolean` toBoolean - parse `"true"`, `"false"` string to booleans (default: `true`)
+  * `boolean` toNumber - parse string integer and float values to numbers (default: `true`)
+* `regexp` keyRegex - allowed key names (default: `/^[a-zæøå0-9-_.]+$/i`)
+* `regexp` arrRegex - allowed array key names (default: `/^[a-zæøå0-9-_.]+(\[\])?$/i`)
 
 #### Bult in custom queries
 

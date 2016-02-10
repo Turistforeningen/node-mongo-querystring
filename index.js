@@ -10,6 +10,12 @@ module.exports = function MongoQS(opts) {
   this.whitelist = opts.whitelist || {};
   this.custom = opts.custom || {};
 
+  // String Value Parsing
+  opts.string = opts.string || {};
+  this.string = opts.string || {};
+  this.string.toBoolean = opts.string.toBoolean || true;
+  this.string.toNumber = opts.string.toNumber || true;
+
   this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
   this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[\])?$/i;
 
@@ -100,6 +106,18 @@ module.exports.prototype.customAfter = function(field) {
   };
 };
 
+module.exports.prototype.parseString = function(string) {
+  if (this.string.toBoolean && string.toLowerCase() === 'true') {
+    return true;
+  } else if (this.string.toBoolean && string.toLowerCase() === 'false') {
+    return false;
+  } else if (this.string.toNumber && !isNaN(string)) {
+    return parseFloat(string, 10);
+  } else {
+    return string;
+  }
+};
+
 module.exports.prototype.parse = function(query) {
   var op, val;
   var res = {};
@@ -138,17 +156,16 @@ module.exports.prototype.parse = function(query) {
           res[key] = {$in: val.filter(function(element) {
             return element[0] !== '!';
           }).map(function(element) {
-            return isNaN(element) ? element : parseFloat(element, 10);
-          })};
+            return this.parseString(element);
+          }.bind(this))};
 
         // $nin query
         } else {
           res[key] = {$nin: val.filter(function(element) {
             return element[0] === '!';
           }).map(function(element) {
-            element = element.substr(1);
-            return isNaN(element) ? element : parseFloat(element, 10);
-          })};
+            return this.parseString(element.substr(1));
+          }.bind(this))};
         }
       }
 
@@ -173,7 +190,7 @@ module.exports.prototype.parse = function(query) {
         switch (op) {
           case '!':
             if (val) {
-              return { $ne: isNaN(val) ? val : parseFloat(val, 10) };
+              return { $ne: this.parseString(val) };
             } else {
               return { $exists: false };
             }
@@ -193,9 +210,9 @@ module.exports.prototype.parse = function(query) {
                 return { $regex: val, $options: 'i' };
             }
         }
-      })();
+      }.bind(this))();
     } else {
-      res[key] = isNaN(val) ? val : parseFloat(val, 10);
+      res[key] = this.parseString(val);
     }
   }
   return res;

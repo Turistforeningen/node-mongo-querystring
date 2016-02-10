@@ -100,6 +100,47 @@ describe('customAfter()', function() {
   });
 });
 
+describe('parseString()', function() {
+  it('returns boolean true for "true" string', function() {
+    assert.equal(qs.parseString('true'), true);
+  });
+
+  it('returns string "true" when boolean parsing is disabled', function() {
+    qs.string.toBoolean = false;
+    assert.equal(qs.parseString('true'), 'true');
+  });
+
+  it('returns boolean false for "flase" string', function() {
+    assert.equal(qs.parseString('false'), false);
+  });
+
+  it('returns string "false" when boolean parsing is disabled', function() {
+    qs.string.toBoolean = false;
+    assert.equal(qs.parseString('false'), 'false');
+  });
+
+  it('returns number for parseable integer', function() {
+    assert.equal(qs.parseString('100'), 100);
+  });
+
+  it('returns string number when number parsing is disabled', function() {
+    qs.string.toNumber = false;
+    assert.equal(qs.parseString('100'), '100');
+  });
+
+  it('returns number for zero padded parseable integer', function() {
+    assert.equal(qs.parseString('000100'), 100);
+  });
+
+  it('returns number for parseable float', function() {
+    assert.equal(qs.parseString('10.123'), 10.123);
+  });
+
+  it('returns number for zero padded parseable float', function() {
+    assert.equal(qs.parseString('00010.123'), 10.123);
+  });
+});
+
 describe('parse()', function() {
   describe('parsing', function() {
     describe('key value validation', function() {
@@ -143,6 +184,17 @@ describe('parse()', function() {
         });
       });
 
+      it('return string boolean as boolean', function() {
+        query = qs.parse({
+          foo: 'true',
+          bar: 'false'
+        });
+        assert.deepEqual(query, {
+          foo: true,
+          bar: false
+        });
+      });
+
       it('returns string integer as number', function() {
         query = qs.parse({
           navn: '10'
@@ -182,6 +234,17 @@ describe('parse()', function() {
           navn: {
             $ne: 'foo'
           }
+        });
+      });
+
+      it('return string boolean as boolean', function() {
+        query = qs.parse({
+          foo: '!true',
+          bar: '!false'
+        });
+        assert.deepEqual(query, {
+          foo: {$ne: true},
+          bar: {$ne: false}
         });
       });
 
@@ -289,23 +352,23 @@ describe('parse()', function() {
 
     describe('$in / $nin operator', function() {
       it('returns in array query', function() {
-        var string = 'foo[]=10&foo[]=10.011&foo[]=bar';
+        var string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
         var params = require('querystring').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $in: [10, 10.011, 'bar']
+            $in: [10, 10.011, 'bar', true]
           }
         });
       });
 
       it('returns in array query with "qs" parser (GH-06)', function() {
-        var string = 'foo[]=10&foo[]=10.011&foo[]=bar';
+        var string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
         var params = require('qs').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $in: [10, 10.011, 'bar']
+            $in: [10, 10.011, 'bar', true]
           }
         });
       });
@@ -322,23 +385,23 @@ describe('parse()', function() {
       });
 
       it('returns not in array query', function() {
-        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar';
+        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
         var params = require('querystring').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $nin: [10, 10.011, 'bar']
+            $nin: [10, 10.011, 'bar', false]
           }
         });
       });
 
       it('returns not in array query with "gs" parser (GH-06)', function() {
-        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar';
+        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
         var params = require('qs').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $nin: [10, 10.011, 'bar']
+            $nin: [10, 10.011, 'bar', false]
           }
         });
       });
