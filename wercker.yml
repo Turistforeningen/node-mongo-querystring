@@ -1,4 +1,4 @@
-box: node:0.10
+box: node:argon
 
 services:
     - mongo:latest
