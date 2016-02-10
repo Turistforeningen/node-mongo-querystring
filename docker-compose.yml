@@ -2,7 +2,7 @@ mongo:
     image: mongo:latest
 
 dev:
-  image: node:0.10-slim
+  image: node:argon
   links:
     - mongo
   working_dir: /usr/src/app
@@ -11,4 +11,3 @@ dev:
   command: "npm run watch"
   environment:
     - NODE_ENV=development
-    - NPM_CONFIG_LOGLEVEL=info
