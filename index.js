@@ -198,9 +198,9 @@ module.exports.prototype.parse = function(query) {
             }
             break;
           case '>':
-            return output ? hasEqual ? {$gte: output} : {$gt: output} : {};
+            return output ? hasEqual ? { $gte: output } : { $gt: output } : {};
           case '<':
-            return output ? hasEqual ? {$lte: output} : {$lt: output} : {};
+            return output ? hasEqual ? { $lte: output } : { $lt: output } : {};
           default:
             val = val.replace(/[^a-zæøå0-9-_.* ]/i, '');
             switch (op) {
