@@ -187,6 +187,8 @@ module.exports.prototype.parse = function(query) {
       val = val.substr(1);
 
       res[key] = (function() {
+        var hasEqual = (val.charAt(0) === '=');
+        var output = parseFloat((hasEqual ? val.substr(1) : val), 10);
         switch (op) {
           case '!':
             if (val) {
@@ -196,9 +198,9 @@ module.exports.prototype.parse = function(query) {
             }
             break;
           case '>':
-            return { $gt: parseFloat(val, 10) };
+            return output ? hasEqual ? { $gte: output } : { $gt: output } : {};
           case '<':
-            return { $lt: parseFloat(val, 10) };
+            return output ? hasEqual ? { $lte: output } : { $lt: output } : {};
           default:
             val = val.replace(/[^a-zæøå0-9-_.* ]/i, '');
             switch (op) {
