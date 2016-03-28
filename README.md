@@ -136,4 +136,17 @@ mongo.collection('mycol').find(query, field).toArray(function(err, documents) {
 });
 ```
 
+### Collaborators
+
+Individuals making significant and valuable contributions are made Collaborators
+and given commit-access to the project. These individuals are identified by the
+existing Collaborators and their addition as Collaborators is discussed as a
+pull request to this project's README.md.
+
+Note: If you make a significant contribution and are not considered for
+commit-access log an issue or contact one of the Collaborators directly.
+
+* Hans Kristian Flaatten - @Starefossen
+* Edward Knowles - @eknowles
+
 ## [MIT Licensed](https://raw.githubusercontent.com/Turistforeningen/node-mongo-querystring/master/LICENSE)
