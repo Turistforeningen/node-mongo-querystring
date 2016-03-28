@@ -58,6 +58,27 @@ describe('Example App', function() {
       .end(done);
   });
 
+  it('returns places near point with max distance', function(done) {
+    app.get(url + '?near=6.13037,61.00607,7000')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 2);
+        assert.equal(res.body[0].name, 'Solrenningen');
+        assert.equal(res.body[1].name, 'Åsedalen');
+      })
+      .end(done);
+  });
+
+  it('returns places near point with max and min distance', function(done) {
+    app.get(url + '?near=6.13037,61.00607,7000,1000')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 1);
+        assert.equal(res.body[0].name, 'Åsedalen');
+      })
+      .end(done);
+  });
+
   it('returns places inside bbox', function(done) {
     var bbox = [
       '5.5419158935546875',
