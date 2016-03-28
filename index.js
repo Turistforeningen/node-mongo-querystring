@@ -69,11 +69,14 @@ module.exports.prototype.customNear = function(field) {
   return function(query, point) {
     point = point.split(',');
 
-    if (point.length === 2) {
+    if (point.length >= 2) {
       point[0] = parseFloat(point[0], 10);
       point[1] = parseFloat(point[1], 10);
 
       if (!isNaN(point.reduce(function(a,b){return a+b;}))) {
+        var max = parseInt(point[2], 10);
+        var min = parseInt(point[3], 10);
+
         query[field] = {
           $near: {
             $geometry: {
@@ -82,6 +85,14 @@ module.exports.prototype.customNear = function(field) {
             },
           },
         };
+
+        if (!isNaN(max)) {
+          query[field].$near.$maxDistance = parseInt(point[2], 10);
+
+          if (!isNaN(min)) {
+            query[field].$near.$minDistance = parseInt(point[3], 10);
+          }
+        }
       }
     }
   };

@@ -52,6 +52,8 @@ useful when building an API and accepting various user specificed queries.
 |-----------|---------------|--------------|
 | bbox | `?bbox=0,1,2,3` | `{ geojson: { $geoWithin: { $geometry: { … } } } }` |
 | near | `?near=0,1` | `{ geojson: { $near: { $geometry: { … } } } }` |
+| near (max distance) | `?near=0,1,2` | `{ geojson: { $near: { …, $maxDistance: 2 } } }` |
+| near (max & min distance) | `?near=0,1,2,3` | `{ geojson: { $near: { …, $minDistance: 3 } } }` |
 
 * Custom query functions
   * `after` (date)
