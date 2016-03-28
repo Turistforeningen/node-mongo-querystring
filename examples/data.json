@@ -1,5 +1,6 @@
 [{
   "name": "Solrenningen",
+  "visits": 40,
   "geojson": {
     "type": "Point",
     "coordinates": [6.13037, 61.00607]
@@ -7,6 +8,7 @@
   "tags": ["Ved", "Mat", "Båt"]
 },{
   "name": "Norddalshytten",
+  "visits": 5571,
   "geojson": {
     "type": "Point",
     "coordinates": [5.99579, 61.01340]
@@ -14,6 +16,7 @@
   "tags": ["Ved", "Mat", "Tåke"]
 },{
   "name": "Åsedalen",
+  "visits": 10000,
   "geojson": {
     "type": "Point",
     "coordinates": [6.22032, 60.96244]
@@ -21,6 +24,7 @@
   "tags": ["Ved", "Mat", "Stekeovn"]
 },{
   "name": "Vatnane",
+  "visits": 9290,
   "geojson": {
     "type": "Point",
     "coordinates": [6.32607, 61.02105]
@@ -28,6 +32,7 @@
   "tags": ["Ved"]
 },{
   "name": "Selhamar",
+  "visits": 301,
   "geojson": {
     "type": "Point",
     "coordinates": [6.26495, 60.91275]
@@ -35,6 +40,7 @@
   "tags": ["Ved", "Mat", "Stekeovn", "Båt"]
 },{
   "name": "Vardadalsbu",
+  "visits": 30149,
   "geojson": {
     "type": "Point",
     "coordinates": [5.89279, 60.94477]

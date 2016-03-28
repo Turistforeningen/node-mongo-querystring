@@ -17,7 +17,9 @@ useful when building an API and accepting various user specificed queries.
 * Basic operators
   * `$eq`
   * `$gt`
+  * `$gte`
   * `$lt`
+  * `$lte`
   * `$ne`
   * `$in`
   * `$nin`
@@ -34,6 +36,8 @@ useful when building an API and accepting various user specificed queries.
 | not exists | `?foo=!`     | `{ foo: { $exists: false }}` |
 | greater than | `?foo=>10` | `{ foo: { $gt: 10 }}` |
 | less than | `?foo=<10`    | `{ foo: { $lt: 10 }}` |
+| greater than or equal to | `?foo=>=10` | `{ foo: { $gte: 10 }}` |
+| less than or equal to | `?foo=<=10`    | `{ foo: { $lte: 10 }}` |
 | starts with | `?foo=^bar` | `{ foo: { $regex: "^bar", $options: "i" }}` |
 | ends with | `?foo=$bar`   | `{ foo: { $regex: "bar$", $options: "i" }}` |
 | contains  | `?foo=~bar`   | `{ foo: { $regex: "bar", $options: "i" }}` |

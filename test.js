@@ -297,6 +297,34 @@ describe('parse()', function() {
       });
     });
 
+    describe('>= operator', function() {
+      it('returns greater than or equal to query', function() {
+        query = qs.parse({
+          navn: '>=10.110'
+        });
+        assert.deepEqual(query, {
+          navn: {
+            $gte: 10.110
+          }
+        });
+        return assert.strictEqual(query.navn.$gte, 10.110);
+      });
+    });
+
+    describe('>= operator', function() {
+      it('returns greater than or equal to query', function() {
+        query = qs.parse({
+          navn: '>=10.110'
+        });
+        assert.deepEqual(query, {
+          navn: {
+            $gte: 10.110
+          }
+        });
+        return assert.strictEqual(query.navn.$gte, 10.110);
+      });
+    });
+
     describe('< operator', function() {
       it('returns less than query', function() {
         query = qs.parse({
@@ -308,6 +336,34 @@ describe('parse()', function() {
           }
         });
         assert.strictEqual(query.navn.$lt, 10.110);
+      });
+    });
+
+    describe('<= operator', function() {
+      it('returns less than query or equal to', function() {
+        query = qs.parse({
+          navn: '<=10.110'
+        });
+        assert.deepEqual(query, {
+          navn: {
+            $lte: 10.110
+          }
+        });
+        assert.strictEqual(query.navn.$lte, 10.110);
+      });
+    });
+
+    describe('<= operator', function() {
+      it('returns less than query or equal to', function() {
+        query = qs.parse({
+          navn: '<=10.110'
+        });
+        assert.deepEqual(query, {
+          navn: {
+            $lte: 10.110
+          }
+        });
+        assert.strictEqual(query.navn.$lte, 10.110);
       });
     });
 

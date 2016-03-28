@@ -76,7 +76,7 @@ describe('Example App', function() {
       .end(done);
   });
 
-  it('returns palces with any of the following tags', function(done) {
+  it('returns places with any of the following tags', function(done) {
     app.get(url + '?tags[]=Båt&tags[]=Stekeovn')
       .expect(200)
       .expect(function(res) {
@@ -84,6 +84,46 @@ describe('Example App', function() {
         assert.equal(res.body[0].name, 'Solrenningen');
         assert.equal(res.body[1].name, 'Åsedalen');
         assert.equal(res.body[2].name, 'Selhamar');
+      })
+      .end(done);
+  });
+
+  it('returns places with visits less than 40', function(done) {
+    app.get(url + '?visits=<40')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 0);
+      })
+      .end(done);
+  });
+
+  it('returns places with visits less than or equal to 40', function(done) {
+    app.get(url + '?visits=<=40')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 1);
+        assert.equal(res.body[0].name, 'Solrenningen');
+      })
+      .end(done);
+  });
+
+  it('returns places with visits greater than 10,000', function(done) {
+    app.get(url + '?visits=>10000')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 1);
+        assert.equal(res.body[0].name, 'Vardadalsbu');
+      })
+      .end(done);
+  });
+
+  it('returns places with visits > or equal to 10,000', function(done) {
+    app.get(url + '?visits=>=10000')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 2);
+        assert.equal(res.body[0].name, 'Åsedalen');
+        assert.equal(res.body[1].name, 'Vardadalsbu');
       })
       .end(done);
   });
