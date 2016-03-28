@@ -117,7 +117,7 @@ describe('Example App', function() {
       .end(done);
   });
 
-  it('returns places with visits greater than or equal to 10,000', function(done) {
+  it('returns places with visits > or equal to 10,000', function(done) {
     app.get(url + '?visits=>=10000')
       .expect(200)
       .expect(function(res) {
