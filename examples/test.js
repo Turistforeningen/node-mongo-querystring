@@ -148,4 +148,16 @@ describe('Example App', function() {
       })
       .end(done);
   });
+
+  it('returns places with visits > 40 and < 10,000', function(done) {
+    app.get(url + '?visits=>40&visits=<10000')
+      .expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 3);
+        assert.equal(res.body[0].name, 'Norddalshytten');
+        assert.equal(res.body[1].name, 'Vatnane');
+        assert.equal(res.body[2].name, 'Selhamar');
+      })
+      .end(done);
+  });
 });

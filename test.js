@@ -100,44 +100,183 @@ describe('customAfter()', function() {
   });
 });
 
-describe('parseString()', function() {
+describe('parseStringVal()', function() {
   it('returns boolean true for "true" string', function() {
-    assert.equal(qs.parseString('true'), true);
+    assert.equal(qs.parseStringVal('true'), true);
   });
 
   it('returns string "true" when boolean parsing is disabled', function() {
     qs.string.toBoolean = false;
-    assert.equal(qs.parseString('true'), 'true');
+    assert.equal(qs.parseStringVal('true'), 'true');
   });
 
   it('returns boolean false for "flase" string', function() {
-    assert.equal(qs.parseString('false'), false);
+    assert.equal(qs.parseStringVal('false'), false);
   });
 
   it('returns string "false" when boolean parsing is disabled', function() {
     qs.string.toBoolean = false;
-    assert.equal(qs.parseString('false'), 'false');
+    assert.equal(qs.parseStringVal('false'), 'false');
   });
 
   it('returns number for parseable integer', function() {
-    assert.equal(qs.parseString('100'), 100);
+    assert.equal(qs.parseStringVal('100'), 100);
   });
 
   it('returns string number when number parsing is disabled', function() {
     qs.string.toNumber = false;
-    assert.equal(qs.parseString('100'), '100');
+    assert.equal(qs.parseStringVal('100'), '100');
   });
 
   it('returns number for zero padded parseable integer', function() {
-    assert.equal(qs.parseString('000100'), 100);
+    assert.equal(qs.parseStringVal('000100'), 100);
   });
 
   it('returns number for parseable float', function() {
-    assert.equal(qs.parseString('10.123'), 10.123);
+    assert.equal(qs.parseStringVal('10.123'), 10.123);
   });
 
   it('returns number for zero padded parseable float', function() {
-    assert.equal(qs.parseString('00010.123'), 10.123);
+    assert.equal(qs.parseStringVal('00010.123'), 10.123);
+  });
+
+  it('returns string for empty string', function() {
+    assert.equal(qs.parseStringVal(''), '');
+  });
+});
+
+describe('parseString()', function() {
+  it('returns $nin for "!" operator when array is true', function() {
+    assert.deepEqual(qs.parseString('!10', true), {
+      field: '$nin',
+      op: '!',
+      org: '10',
+      parsed: {$nin: 10},
+      value: 10
+    });
+  });
+
+  it('returns $in for "" operator when array is true', function() {
+    assert.deepEqual(qs.parseString('10', true), {
+      field: '$in',
+      op: '',
+      org: '10',
+      parsed: {$in: 10},
+      value: 10
+    });
+  });
+
+  it('returns $exists false for "!" operator when value is ""', function() {
+    assert.deepEqual(qs.parseString('!'), {
+      field: '$exists',
+      op: '!',
+      org: '',
+      parsed: {$exists: false},
+      value: false
+    });
+  });
+
+  it('returns $exists true for "" operator when value is ""', function() {
+    assert.deepEqual(qs.parseString(''), {
+      field: '$exists',
+      op: '',
+      org: '',
+      parsed: {$exists: true},
+      value: true
+    });
+  });
+
+  it('returns $ne for "!" operator', function() {
+    assert.deepEqual(qs.parseString('!10'), {
+      field: '$ne',
+      op: '!',
+      org: '10',
+      parsed: {$ne: 10},
+      value: 10
+    });
+  });
+
+  it('returns $eq for "" operator', function() {
+    assert.deepEqual(qs.parseString('10'), {
+      field: '$eq',
+      op: '',
+      org: '10',
+      parsed: {$eq: 10},
+      value: 10
+    });
+  });
+
+  it('returns $gt for ">" operator', function() {
+    assert.deepEqual(qs.parseString('>10'), {
+      field: '$gt',
+      op: '>',
+      org: '10',
+      parsed: {$gt: 10},
+      value: 10
+    });
+  });
+
+  it('returns $gte for ">=" operator', function() {
+    assert.deepEqual(qs.parseString('>=10'), {
+      field: '$gte',
+      op: '>',
+      org: '10',
+      parsed: {$gte: 10},
+      value: 10
+    });
+  });
+
+  it('returns $lt for "<" operator', function() {
+    assert.deepEqual(qs.parseString('<10'), {
+      field: '$lt',
+      op: '<',
+      org: '10',
+      parsed: {$lt: 10},
+      value: 10
+    });
+  });
+
+  it('returns $lte for "<=" operator', function() {
+    assert.deepEqual(qs.parseString('<=10'), {
+      field: '$lte',
+      op: '<',
+      org: '10',
+      parsed: {$lte: 10},
+      value: 10
+    });
+  });
+
+  it('returns $regex for "^" operator', function() {
+    assert.deepEqual(qs.parseString('^10'), {
+      field: '$regex',
+      op: '^',
+      options: 'i',
+      org: '10',
+      parsed: {$options: 'i', $regex: '^10'},
+      value: '^10'
+    });
+  });
+
+  it('returns $regex for "$" operator', function() {
+    assert.deepEqual(qs.parseString('$10'), {
+      field: '$regex',
+      op: '$',
+      options: 'i',
+      org: '10',
+      parsed: {$options: 'i', $regex: '10$'},
+      value: '10$'
+    });
+  });
+
+  it('returns $regex for "~" operator', function() {
+    assert.deepEqual(qs.parseString('~10'), {
+      field: '$regex',
+      op: '~',
+      options: 'i',
+      org: '10',
+      parsed: {$options: 'i', $regex: '10'},
+      value: '10'
+    });
   });
 });
 
@@ -311,20 +450,6 @@ describe('parse()', function() {
       });
     });
 
-    describe('>= operator', function() {
-      it('returns greater than or equal to query', function() {
-        query = qs.parse({
-          navn: '>=10.110'
-        });
-        assert.deepEqual(query, {
-          navn: {
-            $gte: 10.110
-          }
-        });
-        return assert.strictEqual(query.navn.$gte, 10.110);
-      });
-    });
-
     describe('< operator', function() {
       it('returns less than query', function() {
         query = qs.parse({
@@ -353,17 +478,19 @@ describe('parse()', function() {
       });
     });
 
-    describe('<= operator', function() {
-      it('returns less than query or equal to', function() {
+    describe('multiple <, <=, >, >= operators', function() {
+      it('returns multiple comparison operators for same field', function() {
         query = qs.parse({
-          navn: '<=10.110'
+          count: ['>0.123', '>=1.234', '<2.345', '<=3.456']
         });
         assert.deepEqual(query, {
-          navn: {
-            $lte: 10.110
+          count: {
+            $gt: 0.123,
+            $gte: 1.234,
+            $lt: 2.345,
+            $lte: 3.456
           }
         });
-        assert.strictEqual(query.navn.$lte, 10.110);
       });
     });
 
@@ -429,13 +556,14 @@ describe('parse()', function() {
         });
       });
 
-      it('returns in array without any not in array query', function() {
+      it('returns in array with any not in array query', function() {
         var string = 'foo[]=10&foo[]=!10.011&foo[]=!bar&foo[]=baz';
         var params = require('querystring').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $in: [10, 'baz']
+            $in: [10, 'baz'],
+            $nin: [10.011, 'bar']
           }
         });
       });
@@ -463,13 +591,14 @@ describe('parse()', function() {
       });
 
 
-      it('returns not in array without any in array query', function() {
+      it('returns not in array with any in array query', function() {
         var string = 'foo[]=!10&foo[]=10.011&foo[]=bar&foo[]=!baz';
         var params = require('querystring').parse(string);
 
         assert.deepEqual(qs.parse(params), {
           foo: {
-            $nin: [10, 'baz']
+            $nin: [10, 'baz'],
+            $in: [10.011, 'bar']
           }
         });
       });

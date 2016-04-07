@@ -17,6 +17,7 @@ module.exports = function MongoQS(opts) {
   this.string.toNumber = opts.string.toNumber || true;
 
   this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
+  this.valRegex = opts.valRegex || /[^a-zæøå0-9-_.* ]/i;
   this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[\])?$/i;
 
   for (var param in this.custom) {
@@ -117,12 +118,78 @@ module.exports.prototype.customAfter = function(field) {
   };
 };
 
-module.exports.prototype.parseString = function(string) {
+module.exports.prototype.parseString = function(string, array) {
+  var op = string[0] || '';
+  var eq = string[1] === '=';
+  var org = string.substr(eq ? 2 : 1) || '';
+  var val = this.parseStringVal(org);
+
+  var ret = {op: op, org: org, value: val};
+
+  switch (op) {
+    case '!':
+      if (array) {
+        ret.field = '$nin';
+      } else if (org === '') {
+        ret.field = '$exists';
+        ret.value = false;
+      } else {
+        ret.field = '$ne';
+      }
+      break;
+    case '>':
+      ret.field = eq ? '$gte' : '$gt';
+      break;
+    case '<':
+      ret.field = eq ? '$lte' : '$lt';
+      break;
+    case '^':
+    case '$':
+    case '~':
+      ret.field = '$regex';
+      ret.options = 'i';
+      ret.value = org.replace(this.valReqex, '');
+
+      switch (op) {
+        case '^':
+          ret.value = '^' + val;
+          break;
+        case '$':
+          ret.value = val + '$';
+          break;
+      }
+      break;
+    default:
+      ret.org = org = op + org;
+      ret.op = op = '';
+      ret.value = this.parseStringVal(org);
+
+      if (array) {
+        ret.field = '$in';
+      } else if (org === '') {
+        ret.field = '$exists';
+        ret.value = true;
+      } else {
+        ret.field = '$eq';
+      }
+  }
+
+  ret.parsed = {};
+  ret.parsed[ret.field] = ret.value;
+
+  if (ret.options) {
+    ret.parsed.$options = ret.options;
+  }
+
+  return ret;
+};
+
+module.exports.prototype.parseStringVal = function(string) {
   if (this.string.toBoolean && string.toLowerCase() === 'true') {
     return true;
   } else if (this.string.toBoolean && string.toLowerCase() === 'false') {
     return false;
-  } else if (this.string.toNumber && !isNaN(string)) {
+  } else if (this.string.toNumber && !isNaN(parseFloat(string, 10))) {
     return parseFloat(string, 10);
   } else {
     return string;
@@ -130,7 +197,7 @@ module.exports.prototype.parseString = function(string) {
 };
 
 module.exports.prototype.parse = function(query) {
-  var op, val;
+  var val;
   var res = {};
 
   for (var key in query) {
@@ -161,71 +228,55 @@ module.exports.prototype.parse = function(query) {
       if (this.ops.indexOf('$in') >= 0 && val.length > 0) {
         // remove [] at end of key name (unless it has already been removed)
         key = key.replace(/\[\]$/, '');
+        res[key] = {};
 
-        // $in query
-        if (val[0][0] !== '!') {
-          res[key] = {$in: val.filter(function(element) {
-            return element[0] !== '!';
-          }).map(function(element) {
-            return this.parseString(element);
-          }.bind(this))};
+        for (var i = 0; i < val.length; i++) {
+          if (this.ops.indexOf(val[i][0]) >= 0) {
+            var parsed = this.parseString(val[i], true);
 
-        // $nin query
-        } else {
-          res[key] = {$nin: val.filter(function(element) {
-            return element[0] === '!';
-          }).map(function(element) {
-            return this.parseString(element.substr(1));
-          }.bind(this))};
+            switch (parsed.field) {
+              case '$in':
+              case '$nin':
+                res[key][parsed.field] = res[key][parsed.field] || [];
+                res[key][parsed.field].push(parsed.value);
+                break;
+              case '$regex':
+                res[key].$regex = parsed.value;
+                res[key].$options = parsed.options;
+                break;
+              default:
+                res[key][parsed.field] = parsed.value;
+            }
+          } else {
+            res[key].$in = res[key].$in || [];
+            res[key].$in.push(this.parseStringVal(val[i]));
+          }
         }
       }
 
       continue;
     }
 
+    // value must be a string
     if (typeof val !== 'string') {
       continue;
     }
 
+    // custom functions
     if (typeof this.custom[key] === 'function') {
       this.custom[key](res, val);
 
+    // field exists query
     } else if (!val) {
       res[key] = { $exists: true };
 
+    // query operators
     } else if (this.ops.indexOf(val[0]) >= 0) {
-      op = val.charAt(0);
-      val = val.substr(1);
+      res[key] = this.parseString(val).parsed;
 
-      res[key] = (function() {
-        var hasEqual = (val.charAt(0) === '=');
-        var output = parseFloat((hasEqual ? val.substr(1) : val), 10);
-        switch (op) {
-          case '!':
-            if (val) {
-              return { $ne: this.parseString(val) };
-            } else {
-              return { $exists: false };
-            }
-            break;
-          case '>':
-            return output ? hasEqual ? { $gte: output } : { $gt: output } : {};
-          case '<':
-            return output ? hasEqual ? { $lte: output } : { $lt: output } : {};
-          default:
-            val = val.replace(/[^a-zæøå0-9-_.* ]/i, '');
-            switch (op) {
-              case '^':
-                return { $regex: '^' + val, $options: 'i' };
-              case '$':
-                return { $regex: val + '$', $options: 'i' };
-              default:
-                return { $regex: val, $options: 'i' };
-            }
-        }
-      }.bind(this))();
+    // equal operator (no operator)
     } else {
-      res[key] = this.parseString(val);
+      res[key] = this.parseStringVal(val);
     }
   }
   return res;
