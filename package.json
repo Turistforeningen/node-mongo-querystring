@@ -39,7 +39,7 @@
   "bugs": {
     "url": "https://github.com/Turistforeningen/node-mongo-querystring/issues"
   },
-  "homepage": "https://github.com/Turistforeningen/node-mongo-querystring",
+  "homepage": "https://github.com/Turistforeningen/node-mongo-querystring#readme",
   "devDependencies": {
     "JSONStream": "^1.1.1",
     "express": "^4.13.4",
