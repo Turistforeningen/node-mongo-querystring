@@ -101,79 +101,142 @@ describe('customAfter()', function() {
 });
 
 describe('parseStringVal()', function() {
-  it('returns boolean true for "true" string', function() {
-    assert.equal(qs.parseStringVal('true'), true);
+  describe('true', function() {
+    [
+      'true',
+      'TrUe',
+      'TRUE'
+    ].forEach(function(val) {
+      it('returns true for "'+ val + '" string', function() {
+        assert.strictEqual(qs.parseStringVal(val), true);
+      });
+
+      it('returns "'+ val + '" for "'+ val + '" when !toBoolean', function() {
+        qs.string.toBoolean = false;
+        assert.strictEqual(qs.parseStringVal(val), val);
+      });
+    });
   });
 
-  it('returns string "true" when boolean parsing is disabled', function() {
-    qs.string.toBoolean = false;
-    assert.equal(qs.parseStringVal('true'), 'true');
+  describe('false', function() {
+    [
+      'false',
+      'FaLsE',
+      'FALSE'
+    ].forEach(function(val) {
+      it('returns false for "'+ val + '" string', function() {
+        assert.strictEqual(qs.parseStringVal(val), false);
+      });
+
+      it('returns "'+ val + '" for "'+ val + '" when !toBoolean', function() {
+        qs.string.toBoolean = false;
+        assert.strictEqual(qs.parseStringVal(val), val);
+      });
+    });
   });
 
-  it('returns boolean false for "flase" string', function() {
-    assert.equal(qs.parseStringVal('false'), false);
+  describe('integers', function() {
+    [
+      '0',
+      '1',
+      '100',
+      '000100',
+
+      '+0',
+      '+1',
+      '+100',
+      '+000100',
+
+      '-0',
+      '-1',
+      '-100',
+      '-000100',
+
+      ' 0 ',
+      ' 1 ',
+      ' 100 ',
+      ' 000100 ',
+    ].forEach(function(val) {
+      var ret = parseInt(val, 10);
+
+      it('returns '+ ret +' for "'+ val + '"', function() {
+        assert.strictEqual(qs.parseStringVal(val), ret);
+        assert.notStrictEqual(qs.parseStringVal(val), NaN);
+      });
+
+      it('returns "'+ val + '" for "'+ val + '" when !toNumber', function() {
+        qs.string.toNumber = false;
+        assert.strictEqual(qs.parseStringVal(val), val);
+      });
+    });
   });
 
-  it('returns string "false" when boolean parsing is disabled', function() {
-    qs.string.toBoolean = false;
-    assert.equal(qs.parseStringVal('false'), 'false');
+  describe('floats', function() {
+    [
+      '0.0',
+      '1.1',
+      '100.99',
+      '000100.0099',
+
+      '+0.0',
+      '+1.1',
+      '+100.99',
+      '+000100.0099',
+
+      '-0.0',
+      '-1.1',
+      '-100.99',
+      '-000100.0099',
+
+      ' 0.0 ',
+      ' 1.1 ',
+      ' 100.99 ',
+      ' 000100.0099 ',
+    ].forEach(function(val) {
+      var ret = parseFloat(val, 10);
+
+      it('returns '+ ret + ' for "'+ val + '"', function() {
+        assert.strictEqual(qs.parseStringVal(val), parseFloat(val, 10));
+        assert.notStrictEqual(qs.parseStringVal(val), NaN);
+      });
+
+      it('returns "' + val + '" for "'+ val + '" when !toNumber', function() {
+        qs.string.toNumber = false;
+        assert.strictEqual(qs.parseStringVal(val), val);
+      });
+    });
   });
 
-  it('returns number for parseable integer', function() {
-    assert.equal(qs.parseStringVal('100'), 100);
-  });
+  describe('strings', function() {
+    [
+      '',
 
-  it('returns string number when number parsing is disabled', function() {
-    qs.string.toNumber = false;
-    assert.equal(qs.parseStringVal('100'), '100');
-  });
+      ' ',
+      '  ',
+      '    ',
 
-  it('returns number for zero padded parseable integer', function() {
-    assert.equal(qs.parseStringVal('000100'), 100);
-  });
+      '+',
+      '-',
+      ' + ',
+      ' - ',
 
-  it('returns number for positive parseable integer', function() {
-    assert.equal(qs.parseStringVal('+100'), 100);
-  });
+      'a',
+      'ab',
+      'abc',
 
-  it('returns number for negative parseable integer', function() {
-    assert.equal(qs.parseStringVal('-100'), -100);
-  });
+      ' a ',
+      ' ab ',
+      ' abc ',
 
-  it('returns number for parseable float', function() {
-    assert.equal(qs.parseStringVal('10.123'), 10.123);
-  });
-
-  it('returns number for zero padded parseable float', function() {
-    assert.equal(qs.parseStringVal('00010.123'), 10.123);
-  });
-
-  it('returns number for positive parseable float', function() {
-    assert.equal(qs.parseStringVal('+10.123'), 10.123);
-  });
-
-  it('returns number for negative parseable float', function() {
-    assert.equal(qs.parseStringVal('-10.123'), -10.123);
-  });
-
-  it('returns string for empty string', function() {
-    assert.equal(qs.parseStringVal(''), '');
-  });
-
-  it('returns string for space string', function() {
-    assert.equal(qs.parseStringVal(' '), ' ');
-  });
-
-  it('returns string for "number string number"', function() {
-    assert.equal(qs.parseStringVal('123abc123'), '123abc123');
-  });
-
-  it('returns string for "string number"', function() {
-    assert.equal(qs.parseStringVal('abc123'), 'abc123');
-  });
-
-  it('returns string for "number string"', function() {
-    assert.equal(qs.parseStringVal('123abc'), '123abc');
+      'abc123abc',
+      'abc123',
+      '123abc',
+      '123abc123',
+    ].forEach(function(val) {
+      it('returns "'+ val + '" for "'+ val + '"', function() {
+        assert.strictEqual(qs.parseStringVal(val), val);
+      });
+    });
   });
 });
 
