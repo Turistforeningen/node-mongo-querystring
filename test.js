@@ -132,6 +132,14 @@ describe('parseStringVal()', function() {
     assert.equal(qs.parseStringVal('000100'), 100);
   });
 
+  it('returns number for positive parseable integer', function() {
+    assert.equal(qs.parseStringVal('+100'), 100);
+  });
+
+  it('returns number for negative parseable integer', function() {
+    assert.equal(qs.parseStringVal('-100'), -100);
+  });
+
   it('returns number for parseable float', function() {
     assert.equal(qs.parseStringVal('10.123'), 10.123);
   });
@@ -140,8 +148,32 @@ describe('parseStringVal()', function() {
     assert.equal(qs.parseStringVal('00010.123'), 10.123);
   });
 
+  it('returns number for positive parseable float', function() {
+    assert.equal(qs.parseStringVal('+10.123'), 10.123);
+  });
+
+  it('returns number for negative parseable float', function() {
+    assert.equal(qs.parseStringVal('-10.123'), -10.123);
+  });
+
   it('returns string for empty string', function() {
     assert.equal(qs.parseStringVal(''), '');
+  });
+
+  it('returns string for space string', function() {
+    assert.equal(qs.parseStringVal(' '), ' ');
+  });
+
+  it('returns string for "number string number"', function() {
+    assert.equal(qs.parseStringVal('123abc123'), '123abc123');
+  });
+
+  it('returns string for "string number"', function() {
+    assert.equal(qs.parseStringVal('abc123'), 'abc123');
+  });
+
+  it('returns string for "number string"', function() {
+    assert.equal(qs.parseStringVal('123abc'), '123abc');
   });
 });
 
