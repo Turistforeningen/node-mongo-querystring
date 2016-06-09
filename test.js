@@ -1,25 +1,29 @@
 'use strict';
 
-var assert = require('assert');
-var MongoQS = require('./');
+const assert = require('assert');
+const MongoQS = require('./');
 
-var qs, query;
+const querystring = require('querystring');
+const qs = require('qs');
 
-beforeEach(function() {
-  qs = new MongoQS();
+let mqs = null;
+let query = null;
+
+beforeEach(() => {
+  mqs = new MongoQS();
   query = {};
 });
 
-describe('customBBOX()', function() {
-  it('does not return $geoWithin query for invalid bbox', function() {
-    ['0123', '0,1,2', '0,1,2,a'].forEach(function(bbox) {
-      qs.customBBOX('gojson')(query, bbox);
+describe('customBBOX()', () => {
+  it('does not return $geoWithin query for invalid bbox', () => {
+    ['0123', '0,1,2', '0,1,2,a'].forEach(bbox => {
+      mqs.customBBOX('gojson')(query, bbox);
       assert.deepEqual(query, {});
     });
   });
 
-  it('returns $geoWithin query for valid bbox', function() {
-    qs.customBBOX('geojson')(query, '0,1,2,3');
+  it('returns $geoWithin query for valid bbox', () => {
+    mqs.customBBOX('geojson')(query, '0,1,2,3');
     assert.deepEqual(query, {
       geojson: {
         $geoWithin: {
@@ -39,103 +43,103 @@ describe('customBBOX()', function() {
   });
 });
 
-describe('customNear()', function() {
-  it('does not return $near query for invalid point', function() {
-    ['0123', '0,'].forEach(function(bbox) {
-      qs.customNear('gojson')(query, bbox);
+describe('customNear()', () => {
+  it('does not return $near query for invalid point', () => {
+    ['0123', '0,'].forEach(bbox => {
+      mqs.customNear('gojson')(query, bbox);
       assert.deepEqual(query, {});
     });
   });
 
-  it('returns $near query for valid point', function() {
-    ['0,1', '60.70908,10.37140'].forEach(function(point) {
-      qs.customNear('geojson')(query, point);
+  it('returns $near query for valid point', () => {
+    ['0,1', '60.70908,10.37140'].forEach(point => {
+      mqs.customNear('geojson')(query, point);
       assert.deepEqual(query, {
         geojson: {
           $near: {
             $geometry: {
               type: 'Point',
               coordinates: point.split(',').map(parseFloat),
-            }
-          }
-        }
+            },
+          },
+        },
       });
     });
   });
 });
 
-describe('customAfter()', function() {
-  it('does not return after query for invalid date', function() {
-    ['foo', '2015-13-40'].forEach(function(date) {
-      qs.customAfter('endret')(query, date);
+describe('customAfter()', () => {
+  it('does not return after query for invalid date', () => {
+    ['foo', '2015-13-40'].forEach(date => {
+      mqs.customAfter('endret')(query, date);
       assert.deepEqual(query, {});
     });
   });
 
-  it('returns after query for valid ISO date', function() {
-    qs.customAfter('endret')(query, '2014-09-22T11:50:37.843Z');
+  it('returns after query for valid ISO date', () => {
+    mqs.customAfter('endret')(query, '2014-09-22T11:50:37.843Z');
     assert.deepEqual(query, {
       endret: {
-        $gte: '2014-09-22T11:50:37.843Z'
-      }
+        $gte: '2014-09-22T11:50:37.843Z',
+      },
     });
   });
 
-  it('returns after query for milliseconds timestamp', function() {
-    qs.customAfter('endret')(query, '1411386637843');
+  it('returns after query for milliseconds timestamp', () => {
+    mqs.customAfter('endret')(query, '1411386637843');
     assert.deepEqual(query, {
       endret: {
-        $gte: '2014-09-22T11:50:37.843Z'
-      }
+        $gte: '2014-09-22T11:50:37.843Z',
+      },
     });
   });
 
-  it('returns after query for unix timestamp', function() {
-    qs.customAfter('endret')(query, '1411386637');
+  it('returns after query for unix timestamp', () => {
+    mqs.customAfter('endret')(query, '1411386637');
     assert.deepEqual(query, {
       endret: {
-        $gte: '2014-09-22T11:50:37.000Z'
-      }
+        $gte: '2014-09-22T11:50:37.000Z',
+      },
     });
   });
 });
 
-describe('parseStringVal()', function() {
-  describe('true', function() {
+describe('parseStringVal()', () => {
+  describe('true', () => {
     [
       'true',
       'TrUe',
-      'TRUE'
-    ].forEach(function(val) {
-      it('returns true for "'+ val + '" string', function() {
-        assert.strictEqual(qs.parseStringVal(val), true);
+      'TRUE',
+    ].forEach(val => {
+      it(`returns true for "${val}" string`, () => {
+        assert.strictEqual(mqs.parseStringVal(val), true);
       });
 
-      it('returns "'+ val + '" for "'+ val + '" when !toBoolean', function() {
-        qs.string.toBoolean = false;
-        assert.strictEqual(qs.parseStringVal(val), val);
+      it(`returns "${val}" for "${val}" when !toBoolean`, () => {
+        mqs.string.toBoolean = false;
+        assert.strictEqual(mqs.parseStringVal(val), val);
       });
     });
   });
 
-  describe('false', function() {
+  describe('false', () => {
     [
       'false',
       'FaLsE',
-      'FALSE'
-    ].forEach(function(val) {
-      it('returns false for "'+ val + '" string', function() {
-        assert.strictEqual(qs.parseStringVal(val), false);
+      'FALSE',
+    ].forEach(val => {
+      it(`returns false for "${val}" string`, () => {
+        assert.strictEqual(mqs.parseStringVal(val), false);
       });
 
-      it('returns "'+ val + '" for "'+ val + '" when !toBoolean', function() {
-        qs.string.toBoolean = false;
-        assert.strictEqual(qs.parseStringVal(val), val);
+      it(`returns "${val}" for "${val}" when !toBoolean`, () => {
+        mqs.string.toBoolean = false;
+        assert.strictEqual(mqs.parseStringVal(val), val);
       });
     });
   });
 
-  describe('integers', function() {
+  describe('integers', () => {
     [
       '0',
       '1',
@@ -156,22 +160,22 @@ describe('parseStringVal()', function() {
       ' 1 ',
       ' 100 ',
       ' 000100 ',
-    ].forEach(function(val) {
-      var ret = parseInt(val, 10);
+    ].forEach(val => {
+      const ret = parseInt(val, 10);
 
-      it('returns '+ ret +' for "'+ val + '"', function() {
-        assert.strictEqual(qs.parseStringVal(val), ret);
-        assert.notStrictEqual(qs.parseStringVal(val), NaN);
+      it(`returns ${ret} for "${val}"`, () => {
+        assert.strictEqual(mqs.parseStringVal(val), ret);
+        assert.notStrictEqual(mqs.parseStringVal(val), NaN);
       });
 
-      it('returns "'+ val + '" for "'+ val + '" when !toNumber', function() {
-        qs.string.toNumber = false;
-        assert.strictEqual(qs.parseStringVal(val), val);
+      it(`returns "${val}" for "${val}" when !toNumber`, () => {
+        mqs.string.toNumber = false;
+        assert.strictEqual(mqs.parseStringVal(val), val);
       });
     });
   });
 
-  describe('floats', function() {
+  describe('floats', () => {
     [
       '0.0',
       '1.1',
@@ -192,22 +196,22 @@ describe('parseStringVal()', function() {
       ' 1.1 ',
       ' 100.99 ',
       ' 000100.0099 ',
-    ].forEach(function(val) {
-      var ret = parseFloat(val, 10);
+    ].forEach(val => {
+      const ret = parseFloat(val, 10);
 
-      it('returns '+ ret + ' for "'+ val + '"', function() {
-        assert.strictEqual(qs.parseStringVal(val), parseFloat(val, 10));
-        assert.notStrictEqual(qs.parseStringVal(val), NaN);
+      it(`returns ${ret} for "${val}"`, () => {
+        assert.strictEqual(mqs.parseStringVal(val), parseFloat(val, 10));
+        assert.notStrictEqual(mqs.parseStringVal(val), NaN);
       });
 
-      it('returns "' + val + '" for "'+ val + '" when !toNumber', function() {
-        qs.string.toNumber = false;
-        assert.strictEqual(qs.parseStringVal(val), val);
+      it(`returns "${val}" for "${val}" when !toNumber`, () => {
+        mqs.string.toNumber = false;
+        assert.strictEqual(mqs.parseStringVal(val), val);
       });
     });
   });
 
-  describe('strings', function() {
+  describe('strings', () => {
     [
       '',
 
@@ -232,654 +236,654 @@ describe('parseStringVal()', function() {
       'abc123',
       '123abc',
       '123abc123',
-    ].forEach(function(val) {
-      it('returns "'+ val + '" for "'+ val + '"', function() {
-        assert.strictEqual(qs.parseStringVal(val), val);
+    ].forEach(val => {
+      it(`returns "${val}" for "${val}"`, () => {
+        assert.strictEqual(mqs.parseStringVal(val), val);
       });
     });
   });
 });
 
-describe('parseString()', function() {
-  it('returns $nin for "!" operator when array is true', function() {
-    assert.deepEqual(qs.parseString('!10', true), {
+describe('parseString()', () => {
+  it('returns $nin for "!" operator when array is true', () => {
+    assert.deepEqual(mqs.parseString('!10', true), {
       field: '$nin',
       op: '!',
       org: '10',
-      parsed: {$nin: 10},
-      value: 10
+      parsed: { $nin: 10 },
+      value: 10,
     });
   });
 
-  it('returns $in for "" operator when array is true', function() {
-    assert.deepEqual(qs.parseString('10', true), {
+  it('returns $in for "" operator when array is true', () => {
+    assert.deepEqual(mqs.parseString('10', true), {
       field: '$in',
       op: '',
       org: '10',
-      parsed: {$in: 10},
-      value: 10
+      parsed: { $in: 10 },
+      value: 10,
     });
   });
 
-  it('returns $exists false for "!" operator when value is ""', function() {
-    assert.deepEqual(qs.parseString('!'), {
+  it('returns $exists false for "!" operator when value is ""', () => {
+    assert.deepEqual(mqs.parseString('!'), {
       field: '$exists',
       op: '!',
       org: '',
-      parsed: {$exists: false},
-      value: false
+      parsed: { $exists: false },
+      value: false,
     });
   });
 
-  it('returns $exists true for "" operator when value is ""', function() {
-    assert.deepEqual(qs.parseString(''), {
+  it('returns $exists true for "" operator when value is ""', () => {
+    assert.deepEqual(mqs.parseString(''), {
       field: '$exists',
       op: '',
       org: '',
-      parsed: {$exists: true},
-      value: true
+      parsed: { $exists: true },
+      value: true,
     });
   });
 
-  it('returns $ne for "!" operator', function() {
-    assert.deepEqual(qs.parseString('!10'), {
+  it('returns $ne for "!" operator', () => {
+    assert.deepEqual(mqs.parseString('!10'), {
       field: '$ne',
       op: '!',
       org: '10',
-      parsed: {$ne: 10},
-      value: 10
+      parsed: { $ne: 10 },
+      value: 10,
     });
   });
 
-  it('returns $eq for "" operator', function() {
-    assert.deepEqual(qs.parseString('10'), {
+  it('returns $eq for "" operator', () => {
+    assert.deepEqual(mqs.parseString('10'), {
       field: '$eq',
       op: '',
       org: '10',
-      parsed: {$eq: 10},
-      value: 10
+      parsed: { $eq: 10 },
+      value: 10,
     });
   });
 
-  it('returns $gt for ">" operator', function() {
-    assert.deepEqual(qs.parseString('>10'), {
+  it('returns $gt for ">" operator', () => {
+    assert.deepEqual(mqs.parseString('>10'), {
       field: '$gt',
       op: '>',
       org: '10',
-      parsed: {$gt: 10},
-      value: 10
+      parsed: { $gt: 10 },
+      value: 10,
     });
   });
 
-  it('returns $gte for ">=" operator', function() {
-    assert.deepEqual(qs.parseString('>=10'), {
+  it('returns $gte for ">=" operator', () => {
+    assert.deepEqual(mqs.parseString('>=10'), {
       field: '$gte',
       op: '>',
       org: '10',
-      parsed: {$gte: 10},
-      value: 10
+      parsed: { $gte: 10 },
+      value: 10,
     });
   });
 
-  it('returns $lt for "<" operator', function() {
-    assert.deepEqual(qs.parseString('<10'), {
+  it('returns $lt for "<" operator', () => {
+    assert.deepEqual(mqs.parseString('<10'), {
       field: '$lt',
       op: '<',
       org: '10',
-      parsed: {$lt: 10},
-      value: 10
+      parsed: { $lt: 10 },
+      value: 10,
     });
   });
 
-  it('returns $lte for "<=" operator', function() {
-    assert.deepEqual(qs.parseString('<=10'), {
+  it('returns $lte for "<=" operator', () => {
+    assert.deepEqual(mqs.parseString('<=10'), {
       field: '$lte',
       op: '<',
       org: '10',
-      parsed: {$lte: 10},
-      value: 10
+      parsed: { $lte: 10 },
+      value: 10,
     });
   });
 
-  it('returns $regex for "^" operator', function() {
-    assert.deepEqual(qs.parseString('^10'), {
+  it('returns $regex for "^" operator', () => {
+    assert.deepEqual(mqs.parseString('^10'), {
       field: '$regex',
       op: '^',
       options: 'i',
       org: '10',
-      parsed: {$options: 'i', $regex: '^10'},
-      value: '^10'
+      parsed: { $options: 'i', $regex: '^10' },
+      value: '^10',
     });
   });
 
-  it('returns $regex for "$" operator', function() {
-    assert.deepEqual(qs.parseString('$10'), {
+  it('returns $regex for "$" operator', () => {
+    assert.deepEqual(mqs.parseString('$10'), {
       field: '$regex',
       op: '$',
       options: 'i',
       org: '10',
-      parsed: {$options: 'i', $regex: '10$'},
-      value: '10$'
+      parsed: { $options: 'i', $regex: '10$' },
+      value: '10$',
     });
   });
 
-  it('returns $regex for "~" operator', function() {
-    assert.deepEqual(qs.parseString('~10'), {
+  it('returns $regex for "~" operator', () => {
+    assert.deepEqual(mqs.parseString('~10'), {
       field: '$regex',
       op: '~',
       options: 'i',
       org: '10',
-      parsed: {$options: 'i', $regex: '10'},
-      value: '10'
+      parsed: { $options: 'i', $regex: '10' },
+      value: '10',
     });
   });
 });
 
-describe('parse()', function() {
-  describe('parsing', function() {
-    describe('key value validation', function() {
-      it('accepts keys with alpha num names', function() {
-        assert.deepEqual(qs.parse({
-          'Abc.Æøå_123-456': 'bix'
+describe('parse()', () => {
+  describe('parsing', () => {
+    describe('key value validation', () => {
+      it('accepts keys with alpha num names', () => {
+        assert.deepEqual(mqs.parse({
+          'Abc.Æøå_123-456': 'bix',
         }), {
-          'Abc.Æøå_123-456': 'bix'
+          'Abc.Æøå_123-456': 'bix',
         });
       });
 
-      it('discards keys with special chars', function() {
-        assert.deepEqual(qs.parse({
-          'h4xor$': 'bix'
+      it('discards keys with special chars', () => {
+        assert.deepEqual(mqs.parse({
+          h4xor$: 'bix',
         }), {});
       });
 
-      it('discards non-string values', function() {
-        assert.deepEqual(qs.parse({
-          'foo': []
+      it('discards non-string values', () => {
+        assert.deepEqual(mqs.parse({
+          foo: [],
         }), {});
-        assert.deepEqual(qs.parse({
-          'foo': {}
+        assert.deepEqual(mqs.parse({
+          foo: {},
         }), {});
-        assert.deepEqual(qs.parse({
-          'foo': false
+        assert.deepEqual(mqs.parse({
+          foo: false,
         }), {});
       });
     });
 
-    describe('no operator', function() {
-      it('returns empty query set', function() {
-        assert.deepEqual(qs.parse({}), {});
+    describe('no operator', () => {
+      it('returns empty query set', () => {
+        assert.deepEqual(mqs.parse({}), {});
       });
 
-      it('returns equal query', function() {
-        assert.deepEqual(qs.parse({
-          navn: 'foo'
+      it('returns equal query', () => {
+        assert.deepEqual(mqs.parse({
+          navn: 'foo',
         }), {
-          navn: 'foo'
+          navn: 'foo',
         });
       });
 
-      it('return string boolean as boolean', function() {
-        query = qs.parse({
+      it('return string boolean as boolean', () => {
+        query = mqs.parse({
           foo: 'true',
-          bar: 'false'
+          bar: 'false',
         });
         assert.deepEqual(query, {
           foo: true,
-          bar: false
+          bar: false,
         });
       });
 
-      it('returns string integer as number', function() {
-        query = qs.parse({
-          navn: '10'
+      it('returns string integer as number', () => {
+        query = mqs.parse({
+          navn: '10',
         });
         assert.deepEqual(query, {
-          navn: 10
+          navn: 10,
         });
         assert.strictEqual(query.navn, 10);
       });
 
-      it('returns string float as number', function() {
-        query = qs.parse({
-          navn: '10.110'
+      it('returns string float as number', () => {
+        query = mqs.parse({
+          navn: '10.110',
         });
         assert.deepEqual(query, {
-          navn: 10.110
+          navn: 10.110,
         });
         assert.strictEqual(query.navn, 10.110);
       });
 
-      it('returns exists for empty query', function() {
-        assert.deepEqual(qs.parse({
-          navn: ''
+      it('returns exists for empty query', () => {
+        assert.deepEqual(mqs.parse({
+          navn: '',
         }), {
           navn: {
-            $exists: true
-          }
+            $exists: true,
+          },
         });
       });
     });
 
-    describe('! operator', function() {
-      it('returns unequal query', function() {
-        assert.deepEqual(qs.parse({
-          navn: '!foo'
+    describe('! operator', () => {
+      it('returns unequal query', () => {
+        assert.deepEqual(mqs.parse({
+          navn: '!foo',
         }), {
           navn: {
-            $ne: 'foo'
-          }
+            $ne: 'foo',
+          },
         });
       });
 
-      it('return string boolean as boolean', function() {
-        query = qs.parse({
+      it('return string boolean as boolean', () => {
+        query = mqs.parse({
           foo: '!true',
-          bar: '!false'
+          bar: '!false',
         });
         assert.deepEqual(query, {
-          foo: {$ne: true},
-          bar: {$ne: false}
+          foo: { $ne: true },
+          bar: { $ne: false },
         });
       });
 
-      it('returns string integer as number', function() {
-        query = qs.parse({
-          navn: '!10'
+      it('returns string integer as number', () => {
+        query = mqs.parse({
+          navn: '!10',
         });
         assert.deepEqual(query, {
           navn: {
-            $ne: 10
-          }
+            $ne: 10,
+          },
         });
         assert.strictEqual(query.navn.$ne, 10);
       });
 
-      it('returns string float as number', function() {
-        query = qs.parse({
-          navn: '!10.110'
+      it('returns string float as number', () => {
+        query = mqs.parse({
+          navn: '!10.110',
         });
         assert.deepEqual(query, {
           navn: {
-            $ne: 10.110
-          }
+            $ne: 10.110,
+          },
         });
         assert.strictEqual(query.navn.$ne, 10.110);
       });
 
-      it('returns not exists for empty query', function() {
-        assert.deepEqual(qs.parse({
-          navn: '!'
+      it('returns not exists for empty query', () => {
+        assert.deepEqual(mqs.parse({
+          navn: '!',
         }), {
           navn: {
-            $exists: false
-          }
+            $exists: false,
+          },
         });
       });
     });
 
-    describe('> operator', function() {
-      it('returns greater than query', function() {
-        query = qs.parse({
-          navn: '>10.110'
+    describe('> operator', () => {
+      it('returns greater than query', () => {
+        query = mqs.parse({
+          navn: '>10.110',
         });
         assert.deepEqual(query, {
           navn: {
-            $gt: 10.110
-          }
+            $gt: 10.110,
+          },
         });
         return assert.strictEqual(query.navn.$gt, 10.110);
       });
     });
 
-    describe('>= operator', function() {
-      it('returns greater than or equal to query', function() {
-        query = qs.parse({
-          navn: '>=10.110'
+    describe('>= operator', () => {
+      it('returns greater than or equal to query', () => {
+        query = mqs.parse({
+          navn: '>=10.110',
         });
         assert.deepEqual(query, {
           navn: {
-            $gte: 10.110
-          }
+            $gte: 10.110,
+          },
         });
         return assert.strictEqual(query.navn.$gte, 10.110);
       });
     });
 
-    describe('< operator', function() {
-      it('returns less than query', function() {
-        query = qs.parse({
-          navn: '<10.110'
+    describe('< operator', () => {
+      it('returns less than query', () => {
+        query = mqs.parse({
+          navn: '<10.110',
         });
         assert.deepEqual(query, {
           navn: {
-            $lt: 10.110
-          }
+            $lt: 10.110,
+          },
         });
         assert.strictEqual(query.navn.$lt, 10.110);
       });
     });
 
-    describe('<= operator', function() {
-      it('returns less than query or equal to', function() {
-        query = qs.parse({
-          navn: '<=10.110'
+    describe('<= operator', () => {
+      it('returns less than query or equal to', () => {
+        query = mqs.parse({
+          navn: '<=10.110',
         });
         assert.deepEqual(query, {
           navn: {
-            $lte: 10.110
-          }
+            $lte: 10.110,
+          },
         });
         assert.strictEqual(query.navn.$lte, 10.110);
       });
     });
 
-    describe('multiple <, <=, >, >= operators', function() {
-      it('returns multiple comparison operators for same field', function() {
-        query = qs.parse({
-          count: ['>0.123', '>=1.234', '<2.345', '<=3.456']
+    describe('multiple <, <=, >, >= operators', () => {
+      it('returns multiple comparison operators for same field', () => {
+        query = mqs.parse({
+          count: ['>0.123', '>=1.234', '<2.345', '<=3.456'],
         });
         assert.deepEqual(query, {
           count: {
             $gt: 0.123,
             $gte: 1.234,
             $lt: 2.345,
-            $lte: 3.456
-          }
+            $lte: 3.456,
+          },
         });
       });
     });
 
-    describe('^ operator', function() {
-      it('returns starts with query', function() {
-        assert.deepEqual(qs.parse({
-          navn: '^foo'
+    describe('^ operator', () => {
+      it('returns starts with query', () => {
+        assert.deepEqual(mqs.parse({
+          navn: '^foo',
         }), {
           navn: {
             $regex: '^foo',
-            $options: 'i'
-          }
+            $options: 'i',
+          },
         });
       });
     });
 
-    describe('$ operator', function() {
-      it('returns ends with query', function() {
-        assert.deepEqual(qs.parse({
-          navn: '$foo'
+    describe('$ operator', () => {
+      it('returns ends with query', () => {
+        assert.deepEqual(mqs.parse({
+          navn: '$foo',
         }), {
           navn: {
             $regex: 'foo$',
-            $options: 'i'
-          }
+            $options: 'i',
+          },
         });
       });
     });
 
-    describe('~ operator', function() {
-      it('returns contains query', function() {
-        assert.deepEqual(qs.parse({
-          navn: '~foo'
+    describe('~ operator', () => {
+      it('returns contains query', () => {
+        assert.deepEqual(mqs.parse({
+          navn: '~foo',
         }), {
           navn: {
             $regex: 'foo',
-            $options: 'i'
-          }
+            $options: 'i',
+          },
         });
       });
     });
 
-    describe('$in / $nin operator', function() {
-      it('returns in array query', function() {
-        var string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
-        var params = require('querystring').parse(string);
+    describe('$in / $nin operator', () => {
+      it('returns in array query', () => {
+        const string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
+        const params = querystring.parse(string);
 
-        assert.deepEqual(qs.parse(params), {
+        assert.deepEqual(mqs.parse(params), {
           foo: {
-            $in: [10, 10.011, 'bar', true]
-          }
+            $in: [10, 10.011, 'bar', true],
+          },
         });
       });
 
-      it('returns in array query with "qs" parser (GH-06)', function() {
-        var string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
-        var params = require('qs').parse(string);
+      it('returns in array query with "qs" parser (GH-06)', () => {
+        const string = 'foo[]=10&foo[]=10.011&foo[]=bar&foo[]=true';
+        const params = qs.parse(string);
 
-        assert.deepEqual(qs.parse(params), {
+        assert.deepEqual(mqs.parse(params), {
           foo: {
-            $in: [10, 10.011, 'bar', true]
-          }
+            $in: [10, 10.011, 'bar', true],
+          },
         });
       });
 
-      it('returns in array with any not in array query', function() {
-        var string = 'foo[]=10&foo[]=!10.011&foo[]=!bar&foo[]=baz';
-        var params = require('querystring').parse(string);
+      it('returns in array with any not in array query', () => {
+        const string = 'foo[]=10&foo[]=!10.011&foo[]=!bar&foo[]=baz';
+        const params = querystring.parse(string);
 
-        assert.deepEqual(qs.parse(params), {
+        assert.deepEqual(mqs.parse(params), {
           foo: {
             $in: [10, 'baz'],
-            $nin: [10.011, 'bar']
-          }
+            $nin: [10.011, 'bar'],
+          },
         });
       });
 
-      it('returns not in array query', function() {
-        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
-        var params = require('querystring').parse(string);
+      it('returns not in array query', () => {
+        const string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
+        const params = querystring.parse(string);
 
-        assert.deepEqual(qs.parse(params), {
+        assert.deepEqual(mqs.parse(params), {
           foo: {
-            $nin: [10, 10.011, 'bar', false]
-          }
+            $nin: [10, 10.011, 'bar', false],
+          },
         });
       });
 
-      it('returns not in array query with "gs" parser (GH-06)', function() {
-        var string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
-        var params = require('qs').parse(string);
+      it('returns not in array query with "gs" parser (GH-06)', () => {
+        const string = 'foo[]=!10&foo[]=!10.011&foo[]=!bar&foo[]=!false';
+        const params = qs.parse(string);
 
-        assert.deepEqual(qs.parse(params), {
+        assert.deepEqual(mqs.parse(params), {
           foo: {
-            $nin: [10, 10.011, 'bar', false]
-          }
+            $nin: [10, 10.011, 'bar', false],
+          },
         });
       });
 
 
-      it('returns not in array with any in array query', function() {
-        var string = 'foo[]=!10&foo[]=10.011&foo[]=bar&foo[]=!baz';
-        var params = require('querystring').parse(string);
+      it('returns not in array with any in array query', () => {
+        const string = 'foo[]=!10&foo[]=10.011&foo[]=bar&foo[]=!baz';
+        const params = querystring.parse(string);
 
-        assert.deepEqual(qs.parse(params), {
+        assert.deepEqual(mqs.parse(params), {
           foo: {
             $nin: [10, 'baz'],
-            $in: [10.011, 'bar']
-          }
+            $in: [10.011, 'bar'],
+          },
         });
       });
     });
 
-    it('returns multiple querys', function() {
-      var string = [
+    it('returns multiple querys', () => {
+      const string = [
         'foo=',
         'bar=!',
         'baz=!foo',
         'bix=bez',
         '%foo=bar',
         'bix.bax=that',
-        'foo-bar=bar-foo'
+        'foo-bar=bar-foo',
       ].join('&&');
-      var params = require('querystring').parse(string);
+      const params = querystring.parse(string);
 
-      assert.deepEqual(qs.parse(params), {
+      assert.deepEqual(mqs.parse(params), {
         foo: { $exists: true },
         bar: { $exists: false },
         baz: { $ne: 'foo' },
         bix: 'bez',
         'bix.bax': 'that',
-        'foo-bar': 'bar-foo'
+        'foo-bar': 'bar-foo',
       });
     });
   });
 
-  describe('aliasing', function() {
-    it('returns query for aliased key', function() {
-      qs = new MongoQS({
-        alias: {
-          foo: 'bar'
-        }
-      });
-
-      assert.deepEqual(qs.parse({
-        foo: 'bix'
-      }), {
-        bar: 'bix'
-      });
-    });
-
-    it('returns multiple queries for aliased keys', function() {
-      qs = new MongoQS({
+  describe('aliasing', () => {
+    it('returns query for aliased key', () => {
+      mqs = new MongoQS({
         alias: {
           foo: 'bar',
-          baz: 'bax'
-        }
+        },
       });
 
-      assert.deepEqual(qs.parse({
+      assert.deepEqual(mqs.parse({
         foo: 'bix',
-        baz: 'box'
       }), {
         bar: 'bix',
-        bax: 'box'
+      });
+    });
+
+    it('returns multiple queries for aliased keys', () => {
+      mqs = new MongoQS({
+        alias: {
+          foo: 'bar',
+          baz: 'bax',
+        },
+      });
+
+      assert.deepEqual(mqs.parse({
+        foo: 'bix',
+        baz: 'box',
+      }), {
+        bar: 'bix',
+        bax: 'box',
       });
     });
   });
 
-  describe('blacklisting', function() {
-    it('does not return query for blacklisted key', function() {
-      qs = new MongoQS({
-        blacklist: {
-          foo: true
-        }
-      });
-
-      assert.deepEqual(qs.parse({
-        foo: 'bar',
-        bar: 'foo'
-      }), {
-        bar: 'foo'
-      });
-    });
-
-    it('does not return multiple query for blacklisted keys', function() {
-      qs = new MongoQS({
+  describe('blacklisting', () => {
+    it('does not return query for blacklisted key', () => {
+      mqs = new MongoQS({
         blacklist: {
           foo: true,
-          bar: true
-        }
+        },
       });
 
-      assert.deepEqual(qs.parse({
+      assert.deepEqual(mqs.parse({
         foo: 'bar',
         bar: 'foo',
-        baz: 'bax'
       }), {
-        baz: 'bax'
+        bar: 'foo',
+      });
+    });
+
+    it('does not return multiple query for blacklisted keys', () => {
+      mqs = new MongoQS({
+        blacklist: {
+          foo: true,
+          bar: true,
+        },
+      });
+
+      assert.deepEqual(mqs.parse({
+        foo: 'bar',
+        bar: 'foo',
+        baz: 'bax',
+      }), {
+        baz: 'bax',
       });
     });
   });
 
-  describe('whitelisting', function() {
-    it('returns query only for whitelisted key', function() {
-      qs = new MongoQS({
-        whitelist: {
-          foo: true
-        }
-      });
-
-      assert.deepEqual(qs.parse({
-        foo: 'bar',
-        bar: 'foo',
-        baz: 'bax'
-      }), {
-        foo: 'bar'
-      });
-    });
-
-    it('returns multiple queries for whitelisted keys', function() {
-      qs = new MongoQS({
+  describe('whitelisting', () => {
+    it('returns query only for whitelisted key', () => {
+      mqs = new MongoQS({
         whitelist: {
           foo: true,
-          bar: true
-        }
+        },
       });
 
-      assert.deepEqual(qs.parse({
+      assert.deepEqual(mqs.parse({
         foo: 'bar',
         bar: 'foo',
-        baz: 'bax'
+        baz: 'bax',
       }), {
         foo: 'bar',
-        bar: 'foo'
+      });
+    });
+
+    it('returns multiple queries for whitelisted keys', () => {
+      mqs = new MongoQS({
+        whitelist: {
+          foo: true,
+          bar: true,
+        },
+      });
+
+      assert.deepEqual(mqs.parse({
+        foo: 'bar',
+        bar: 'foo',
+        baz: 'bax',
+      }), {
+        foo: 'bar',
+        bar: 'foo',
       });
     });
   });
 
-  describe('custom', function() {
-    it('returns custom bbox query', function() {
-      qs = new MongoQS({
+  describe('custom', () => {
+    it('returns custom bbox query', () => {
+      mqs = new MongoQS({
         custom: {
-          bbox: 'geojson'
-        }
+          bbox: 'geojson',
+        },
       });
 
-      assert.deepEqual(qs.parse({
-        bbox: '0,1,2,3'
+      assert.deepEqual(mqs.parse({
+        bbox: '0,1,2,3',
       }), {
         geojson: {
           $geoWithin: {
             $geometry: {
               type: 'Polygon',
-              coordinates: [[[0, 1], [2, 1], [2, 3], [0, 3], [0, 1]]]
-            }
-          }
-        }
+              coordinates: [[[0, 1], [2, 1], [2, 3], [0, 3], [0, 1]]],
+            },
+          },
+        },
       });
     });
 
-    it('returns custom near query', function() {
-      qs = new MongoQS({
+    it('returns custom near query', () => {
+      mqs = new MongoQS({
         custom: {
-          near: 'geojson'
-        }
+          near: 'geojson',
+        },
       });
 
-      assert.deepEqual(qs.parse({
-        near: '0,1'
+      assert.deepEqual(mqs.parse({
+        near: '0,1',
       }), {
         geojson: {
           $near: {
             $geometry: {
               type: 'Point',
-              coordinates: [0, 1]
-            }
-          }
-        }
+              coordinates: [0, 1],
+            },
+          },
+        },
       });
     });
 
-    it('returns custom after query', function() {
-      qs = new MongoQS({
+    it('returns custom after query', () => {
+      mqs = new MongoQS({
         custom: {
-          after: 'endret'
-        }
+          after: 'endret',
+        },
       });
-      assert.deepEqual(qs.parse({
-        after: '2014-01-01'
+      assert.deepEqual(mqs.parse({
+        after: '2014-01-01',
       }), {
         endret: {
-          $gte: '2014-01-01T00:00:00.000Z'
-        }
+          $gte: '2014-01-01T00:00:00.000Z',
+        },
       });
     });
   });

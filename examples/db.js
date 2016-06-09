@@ -1,25 +1,23 @@
 'use strict';
 
-var EventEmitter = require('events').EventEmitter;
-var MongoClient = require('mongodb').MongoClient;
-var inherits = require('util').inherits;
+const EventEmitter = require('events').EventEmitter;
+const MongoClient = require('mongodb').MongoClient;
+const inherits = require('util').inherits;
 
-var Mongo = function(uri) {
+function Mongo(uri) {
   EventEmitter.call(this);
 
   this.db = null;
 
-  var $this = this;
-
-  new MongoClient.connect(uri, function(err, db) {
+  MongoClient.connect(uri, (err, db) => {
     if (err) { throw err; }
 
-    $this.db = db;
-    $this.emit('ready');
+    this.db = db;
+    this.emit('ready');
   });
 
   return this;
-};
+}
 
 inherits(Mongo, EventEmitter);
 
