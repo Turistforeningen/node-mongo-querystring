@@ -1,8 +1,7 @@
-/*jshint loopfunc: true */
 'use strict';
 
-module.exports = function MongoQS(opts) {
-  opts = opts || {};
+module.exports = function MongoQS(options) {
+  const opts = options || {};
 
   this.ops = opts.ops || ['!', '^', '$', '~', '>', '<', '$in'];
   this.alias = opts.alias || {};
@@ -20,111 +19,107 @@ module.exports = function MongoQS(opts) {
   this.valRegex = opts.valRegex || /[^a-zæøå0-9-_.* ]/i;
   this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[\])?$/i;
 
-  for (var param in this.custom) {
-    switch (param) {
-      case 'bbox':
-        this.custom.bbox = this.customBBOX(this.custom[param]);
-        break;
-      case 'near':
-        this.custom.near = this.customNear(this.custom[param]);
-        break;
-      case 'after':
-        this.custom.after = this.customAfter(this.custom[param]);
-    }
+  if (this.custom.bbox) {
+    this.custom.bbox = this.customBBOX(this.custom.bbox);
   }
+
+  if (this.custom.near) {
+    this.custom.near = this.customNear(this.custom.near);
+  }
+
+  if (this.custom.after) {
+    this.custom.after = this.customAfter(this.custom.after);
+  }
+
   return this;
 };
 
-module.exports.prototype.customBBOX = function(field) {
-  return function(query, bbox) {
-    bbox = bbox.split(',');
+module.exports.prototype.customBBOX = (field) => (query, bbox) => {
+  const bboxArr = bbox.split(',');
 
-    if (bbox.length === 4) {
-      // Optimize by unrolling the loop
-      bbox[0] = parseFloat(bbox[0], 10);
-      bbox[1] = parseFloat(bbox[1], 10);
-      bbox[2] = parseFloat(bbox[2], 10);
-      bbox[3] = parseFloat(bbox[3], 10);
+  if (bboxArr.length === 4) {
+    // Optimize by unrolling the loop
+    bboxArr[0] = parseFloat(bboxArr[0], 10);
+    bboxArr[1] = parseFloat(bboxArr[1], 10);
+    bboxArr[2] = parseFloat(bboxArr[2], 10);
+    bboxArr[3] = parseFloat(bboxArr[3], 10);
 
-      if (!isNaN(bbox.reduce(function(a,b){return a+b;}))) {
-        query[field] = {
-          $geoWithin: {
-            $geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [bbox[0], bbox[1]],
-                [bbox[2], bbox[1]],
-                [bbox[2], bbox[3]],
-                [bbox[0], bbox[3]],
-                [bbox[0], bbox[1]],
-              ]],
-            },
+    if (!isNaN(bboxArr.reduce((a, b) => a + b))) {
+      query[field] = {
+        $geoWithin: {
+          $geometry: {
+            type: 'Polygon',
+            coordinates: [[
+              [bboxArr[0], bboxArr[1]],
+              [bboxArr[2], bboxArr[1]],
+              [bboxArr[2], bboxArr[3]],
+              [bboxArr[0], bboxArr[3]],
+              [bboxArr[0], bboxArr[1]],
+            ]],
           },
-        };
-      }
+        },
+      };
     }
-  };
+  }
 };
 
-module.exports.prototype.customNear = function(field) {
-  return function(query, point) {
-    point = point.split(',');
+module.exports.prototype.customNear = field => (query, point) => {
+  const pointArr = point.split(',');
 
-    if (point.length >= 2) {
-      point[0] = parseFloat(point[0], 10);
-      point[1] = parseFloat(point[1], 10);
+  if (pointArr.length >= 2) {
+    pointArr[0] = parseFloat(pointArr[0], 10);
+    pointArr[1] = parseFloat(pointArr[1], 10);
 
-      if (!isNaN(point.reduce(function(a,b){return a+b;}))) {
-        var max = parseInt(point[2], 10);
-        var min = parseInt(point[3], 10);
+    if (!isNaN(pointArr.reduce((a, b) => a + b))) {
+      const max = parseInt(pointArr[2], 10);
+      const min = parseInt(pointArr[3], 10);
 
-        query[field] = {
-          $near: {
-            $geometry: {
-              type: 'Point',
-              coordinates: point,
-            },
+      query[field] = {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: pointArr,
           },
-        };
+        },
+      };
 
-        if (!isNaN(max)) {
-          query[field].$near.$maxDistance = parseInt(point[2], 10);
+      if (!isNaN(max)) {
+        query[field].$near.$maxDistance = parseInt(pointArr[2], 10);
 
-          if (!isNaN(min)) {
-            query[field].$near.$minDistance = parseInt(point[3], 10);
-          }
+        if (!isNaN(min)) {
+          query[field].$near.$minDistance = parseInt(pointArr[3], 10);
         }
       }
     }
-  };
+  }
 };
 
-module.exports.prototype.customAfter = function(field) {
-  return function(query, date) {
-    if (!isNaN(date)) {
-      if ((date + '').length === 10) {
-        date = date + '000';
-      }
-      date = parseInt(date, 10);
-    }
+module.exports.prototype.customAfter = field => (query, value) => {
+  let date = value;
 
-    date = new Date(date);
-
-    if (date.toString() !== 'Invalid Date') {
-      query[field] = {
-        $gte: date.toISOString()
-      };
+  if (!isNaN(date)) {
+    if (`${date}`.length === 10) {
+      date = `${date}000`;
     }
-  };
+    date = parseInt(date, 10);
+  }
+
+  date = new Date(date);
+
+  if (date.toString() !== 'Invalid Date') {
+    query[field] = {
+      $gte: date.toISOString(),
+    };
+  }
 };
 
-module.exports.prototype.parseString = function(string, array) {
-  var op = string[0] || '';
-  var eq = string[1] === '=';
-  var org = string.substr(eq ? 2 : 1) || '';
-  var val = this.parseStringVal(org);
+module.exports.prototype.parseString = function parseString(string, array) {
+  let op = string[0] || '';
+  const eq = string[1] === '=';
+  let org = string.substr(eq ? 2 : 1) || '';
+  const val = this.parseStringVal(org);
 
-  var ret = {op: op, org: org, value: val};
+  const ret = { op, org, value: val };
 
   switch (op) {
     case '!':
@@ -152,10 +147,12 @@ module.exports.prototype.parseString = function(string, array) {
 
       switch (op) {
         case '^':
-          ret.value = '^' + val;
+          ret.value = `^${val}`;
           break;
         case '$':
-          ret.value = val + '$';
+          ret.value = `${val}$`;
+          break;
+        default:
           break;
       }
       break;
@@ -184,7 +181,7 @@ module.exports.prototype.parseString = function(string, array) {
   return ret;
 };
 
-module.exports.prototype.parseStringVal = function(string) {
+module.exports.prototype.parseStringVal = function parseStringVal(string) {
   if (this.string.toBoolean && string.toLowerCase() === 'true') {
     return true;
   } else if (this.string.toBoolean && string.toLowerCase() === 'false') {
@@ -192,26 +189,26 @@ module.exports.prototype.parseStringVal = function(string) {
   } else if (this.string.toNumber && !isNaN(parseInt(string, 10)) &&
       (+string - +string + 1) >= 0) {
     return parseFloat(string, 10);
-  } else {
-    return string;
   }
+
+  return string;
 };
 
-module.exports.prototype.parse = function(query) {
-  var val;
-  var res = {};
+module.exports.prototype.parse = function parse(query) {
+  const res = {};
 
-  for (var key in query) {
-    val = query[key];
+  Object.keys(query).forEach(k => {
+    let key = k;
+    const val = query[key];
 
     // whitelist
     if (Object.keys(this.whitelist).length && !this.whitelist[key]) {
-      continue;
+      return;
     }
 
     // blacklist
     if (this.blacklist[key]) {
-      continue;
+      return;
     }
 
     // alias
@@ -221,7 +218,7 @@ module.exports.prototype.parse = function(query) {
 
     // string key
     if (typeof val === 'string' && !this.keyRegex.test(key)) {
-      continue;
+      return;
     }
 
     // array key
@@ -231,9 +228,9 @@ module.exports.prototype.parse = function(query) {
         key = key.replace(/\[\]$/, '');
         res[key] = {};
 
-        for (var i = 0; i < val.length; i++) {
+        for (let i = 0; i < val.length; i++) {
           if (this.ops.indexOf(val[i][0]) >= 0) {
-            var parsed = this.parseString(val[i], true);
+            const parsed = this.parseString(val[i], true);
 
             switch (parsed.field) {
               case '$in':
@@ -255,12 +252,12 @@ module.exports.prototype.parse = function(query) {
         }
       }
 
-      continue;
+      return;
     }
 
     // value must be a string
     if (typeof val !== 'string') {
-      continue;
+      return;
     }
 
     // custom functions
@@ -279,6 +276,7 @@ module.exports.prototype.parse = function(query) {
     } else {
       res[key] = this.parseStringVal(val);
     }
-  }
+  });
+
   return res;
 };
