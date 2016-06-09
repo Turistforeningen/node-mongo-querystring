@@ -1,48 +1,57 @@
 box: node:argon
 
 services:
-    - mongo:latest
+  - mongo:latest
 
 build:
-    steps:
-        - script:
-            name: echo nodejs information
-            code: |
-                echo "node version $(node -v) running"
-                echo "npm version $(npm -v) running"
+  steps:
+    - script:
+        name: echo nodejs information
+        code: |
+          echo "node version $(node -v) running"
+          echo "npm version $(npm -v) running"
 
-        - npm-install
+    - npm-install
 
-        - script:
-            name: lint
-            code: npm run lint
+    - script:
+        name: lint
+        code: npm run lint
 
-        - npm-test
+    - npm-test
 
-    after-steps:
-        - turistforeningen/slack-notifier:
-            url: $SLACK_WEBHOOK_URL
+    - script:
+        name: test coverage
+        code: |
+          npm run cover
+          cat ./coverage/lcov.info | npm run codacy-coverage
 
-deploy:
-    steps:
-        # Reinstall node_modules to fix broken symlinks
-        # https://github.com/wercker/docs/issues/310
-        - script:
-            name: rm node_modules
-            code: rm -rf node_modules
+    - script:
+        name: node security project
+        code: |
+          npm run nsp
 
-        - npm-install
+  after-steps:
+    - turistforeningen/slack-notifier:
+        url: $SLACK_WEBHOOK_URL
 
-        - script:
-            name: semantic release pre
-            code: npm run semantic-release -- pre
+npm:
+  steps:
+    # Rebuild node_modules to fix broken symlinks
+    # https://github.com/wercker/docs/issues/310
+    - script:
+        name: npm rebuild
+        code: npm rebuild
 
-        - turistforeningen/npm-publish
+    - script:
+        name: semantic release pre
+        code: npm run semantic-release -- pre
 
-        - script:
-            name: semantic release post
-            code: npm run semantic-release -- post
+    - turistforeningen/npm-publish
 
-    after-steps:
-        - turistforeningen/slack-notifier:
-            url: $SLACK_WEBHOOK_URL
+    - script:
+        name: semantic release post
+        code: npm run semantic-release -- post
+
+  after-steps:
+    - turistforeningen/slack-notifier:
+        url: $SLACK_WEBHOOK_URL
