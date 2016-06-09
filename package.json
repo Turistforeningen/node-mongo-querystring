@@ -2,21 +2,25 @@
   "name": "mongo-querystring",
   "version": null,
   "description": "Parse and pass URL queries to MongoDB query",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "examples",
+    "test.js"
+  ],
+  "scripts": {
+    "codacy-coverage": "codacy-coverage",
+    "cover": "istanbul cover --report lcovonly ./node_modules/.bin/_mocha -- -R spec test.js examples/test.js",
+    "grunt:watch": "grunt watch",
+    "lint": "eslint index.js test.js examples",
+    "nsp": "nsp check",
+    "semantic-release": "semantic-release",
+    "test": "mocha -c -b --check-leaks -R tap test.js examples/test.js",
+    "test:watch": "mocha -w -c -b --check-leaks -R progress test.js examples/test.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Turistforeningen/node-mongo-querystring.git"
-  },
-  "main": "lib/index.js",
-  "directories": {
-    "src": "src",
-    "lib": "lib",
-    "test": "test"
-  },
-  "scripts": {
-    "lint": "jshint *.js examples",
-    "watch": "mocha -w -b -c --check-leaks -R progress test.js examples/test.js",
-    "test": "mocha -b -c --check-leaks -R spec test.js examples/test.js",
-    "semantic-release": "semantic-release"
   },
   "keywords": [
     "query",
@@ -27,14 +31,7 @@
     "mongo",
     "mongodb"
   ],
-  "author": {
-    "name": "Hans Kristian Flaatten",
-    "email": "hans.kristian.flaatten@dnt.no",
-    "url": "https://github.com/starefossen"
-  },
-  "engines": {
-    "node": ">=0.10"
-  },
+  "author": "Hans Kristian Flaatten <hans@starefossen.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Turistforeningen/node-mongo-querystring/issues"
@@ -42,12 +39,21 @@
   "homepage": "https://github.com/Turistforeningen/node-mongo-querystring#readme",
   "devDependencies": {
     "JSONStream": "^1.1.1",
+    "codacy-coverage": "^1.1.3",
+    "eslint": "^2.11.1",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-plugin-import": "^1.8.1",
     "express": "^4.13.4",
-    "jshint": "^2.9.1",
-    "mocha": "^2.4.5",
-    "mongodb": "^2.1.11",
-    "qs": "^6.1.0",
+    "istanbul": "^0.4.3",
+    "joi": "^8.4.1",
+    "mocha": "^2.5.3",
+    "mongodb": "^2.1.18",
+    "nsp": "^2.4.0",
+    "qs": "^6.2.0",
     "semantic-release": "^4.3.5",
     "supertest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=4.0.0"
   }
 }

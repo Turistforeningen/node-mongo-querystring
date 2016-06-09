@@ -1,13 +1,19 @@
-mongo:
+version: '2'
+
+services:
+  mongo:
     image: mongo:latest
 
-dev:
-  image: node:argon
-  links:
-    - mongo
-  working_dir: /usr/src/app
-  volumes:
-    - ".:/usr/src/app"
-  command: "npm run watch"
-  environment:
-    - NODE_ENV=development
+  node:
+    image: node:argon
+    working_dir: /usr/src/app
+    links:
+      - mongo
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - NPM_CONFIG_LOGLEVEL=silent
+      - NPM_CONFIG_PROGRESS=false
+      - NPM_CONFIG_SPIN=false
+    command: npm test
