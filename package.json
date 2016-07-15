@@ -45,7 +45,7 @@
     "eslint-plugin-import": "^1.8.1",
     "express": "^4.13.4",
     "istanbul": "^0.4.3",
-    "joi": "^8.4.1",
+    "joi": "^9.0.1",
     "mocha": "^2.5.3",
     "mongodb": "^2.1.18",
     "nsp": "^2.4.0",
