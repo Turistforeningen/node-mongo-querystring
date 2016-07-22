@@ -52,6 +52,10 @@ npm:
         name: semantic release post
         code: npm run semantic-release -- post
 
+    - script:
+        name: greenkeeper postpublish
+        code: npm run greenkeeper-postpublish
+
   after-steps:
     - turistforeningen/slack-notifier:
         url: $SLACK_WEBHOOK_URL
