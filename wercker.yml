@@ -1,9 +1,9 @@
 box: node:argon
 
-services:
-  - mongo:latest
-
 build:
+  services:
+    - mongo:3.0
+
   steps:
     - script:
         name: echo nodejs information
