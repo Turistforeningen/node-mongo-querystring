@@ -4,7 +4,7 @@ const assert = require('assert');
 const MongoQS = require('./');
 
 const querystring = require('querystring');
-const qs = require('qs');
+const qs = require('qs'); // eslint-disable-line import/no-extraneous-dependencies
 
 let mqs = null;
 let query = null;
