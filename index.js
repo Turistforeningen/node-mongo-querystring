@@ -201,6 +201,11 @@ module.exports.prototype.parse = function parse(query) {
     let key = k;
     const val = query[key];
 
+    // normalize array keys
+    if (val instanceof Array) {
+      key = key.replace(/\[\]$/, '');
+    }
+
     // whitelist
     if (Object.keys(this.whitelist).length && !this.whitelist[key]) {
       return;
@@ -219,13 +224,15 @@ module.exports.prototype.parse = function parse(query) {
     // string key
     if (typeof val === 'string' && !this.keyRegex.test(key)) {
       return;
+
+    // array key
+    } else if (val instanceof Array && !this.arrRegex.test(key)) {
+      return;
     }
 
     // array key
-    if (val instanceof Array && this.arrRegex.test(key)) {
+    if (val instanceof Array) {
       if (this.ops.indexOf('$in') >= 0 && val.length > 0) {
-        // remove [] at end of key name (unless it has already been removed)
-        key = key.replace(/\[\]$/, '');
         res[key] = {};
 
         for (let i = 0; i < val.length; i++) {
