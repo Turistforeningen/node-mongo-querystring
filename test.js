@@ -890,9 +890,9 @@ describe('parse()', () => {
     it('returns custom function query', () => {
       mqs = new MongoQS({
         custom: {
-          assigned: (query, input) => {
-            query['assigned.users._id'] = {
-              $in: input.map(id => parseInt(id, 10)),
+          assigned: (queryObject, inputValue) => {
+            queryObject['assigned.users._id'] = {
+              $in: inputValue.map(id => parseInt(id, 10)),
             };
           },
         },
