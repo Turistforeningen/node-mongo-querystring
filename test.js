@@ -899,7 +899,7 @@ describe('parse()', () => {
       });
 
       assert.deepEqual(mqs.parse({
-        assigned: ['1111', '2222']
+        assigned: ['1111', '2222'],
       }), {
         'assigned.users._id': { $in: [1111, 2222] },
       });
