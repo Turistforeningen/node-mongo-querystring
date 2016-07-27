@@ -187,7 +187,7 @@ module.exports.prototype.parseStringVal = function parseStringVal(string) {
   } else if (this.string.toBoolean && string.toLowerCase() === 'false') {
     return false;
   } else if (this.string.toNumber && !isNaN(parseInt(string, 10)) &&
-      (+string - +string + 1) >= 0) {
+      ((+string - +string) + 1) >= 0) {
     return parseFloat(string, 10);
   }
 
