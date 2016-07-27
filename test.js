@@ -886,5 +886,23 @@ describe('parse()', () => {
         },
       });
     });
+
+    it('returns custom function query', () => {
+      mqs = new MongoQS({
+        custom: {
+          assigned: (query, input) => {
+            query['assigned.users._id'] = {
+              $in: input.map(id => parseInt(id, 10)),
+            };
+          },
+        },
+      });
+
+      assert.deepEqual(mqs.parse({
+        assigned: ['1111', '2222']
+      }), {
+        'assigned.users._id': { $in: [1111, 2222] },
+      });
+    });
   });
 });

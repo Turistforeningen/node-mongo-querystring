@@ -230,6 +230,12 @@ module.exports.prototype.parse = function parse(query) {
       return;
     }
 
+    // custom functions
+    if (typeof this.custom[key] === 'function') {
+      this.custom[key].apply(null, [res, val]);
+      return;
+    }
+
     // array key
     if (val instanceof Array) {
       if (this.ops.indexOf('$in') >= 0 && val.length > 0) {
@@ -267,12 +273,8 @@ module.exports.prototype.parse = function parse(query) {
       return;
     }
 
-    // custom functions
-    if (typeof this.custom[key] === 'function') {
-      this.custom[key](res, val);
-
     // field exists query
-    } else if (!val) {
+    if (!val) {
       res[key] = { $exists: true };
 
     // query operators
