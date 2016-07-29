@@ -53,7 +53,7 @@
     "nsp": "^2.4.0",
     "qs": "^6.2.0",
     "semantic-release": "^4.3.5",
-    "supertest": "^1.2.0"
+    "supertest": "^2.0.0"
   },
   "engines": {
     "node": ">=4.0.0"
