@@ -47,7 +47,7 @@
     "express": "^4.13.4",
     "greenkeeper-postpublish": "^1.0.0",
     "istanbul": "^0.4.3",
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.0",
     "mongodb": "^2.1.18",
     "nsp": "^2.4.0",
     "qs": "^6.2.0",
