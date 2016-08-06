@@ -75,16 +75,16 @@ module.exports.prototype.customNear = field => (query, point) => {
         $near: {
           $geometry: {
             type: 'Point',
-            coordinates: pointArr,
+            coordinates: pointArr.splice(0, 2),
           },
         },
       };
 
       if (!isNaN(max)) {
-        query[field].$near.$maxDistance = parseInt(pointArr[2], 10);
+        query[field].$near.$maxDistance = max;
 
         if (!isNaN(min)) {
-          query[field].$near.$minDistance = parseInt(pointArr[3], 10);
+          query[field].$near.$minDistance = min;
         }
       }
     }
