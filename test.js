@@ -79,7 +79,7 @@ describe('customNear()', () => {
               type: 'Point',
               coordinates: point.split(',').splice(0, 2).map(parseFloat, 10),
             },
-            $maxDistance: parseInt(point.split(',')[2], 10),
+            $maxDistance: parseFloat(point.split(',')[2], 10),
           },
         },
       });
@@ -98,8 +98,8 @@ describe('customNear()', () => {
               type: 'Point',
               coordinates: point.split(',').splice(0, 2).map(parseFloat, 10),
             },
-            $maxDistance: parseInt(point.split(',')[2], 10),
-            $minDistance: parseInt(point.split(',')[3], 10),
+            $maxDistance: parseFloat(point.split(',')[2], 10),
+            $minDistance: parseFloat(point.split(',')[3], 10),
           },
         },
       });

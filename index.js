@@ -68,8 +68,8 @@ module.exports.prototype.customNear = field => (query, point) => {
 
   if (pointArr.length >= 2) {
     if (!isNaN(pointArr.reduce((a, b) => a + b))) {
-      const max = parseInt(pointArr[2], 10);
-      const min = parseInt(pointArr[3], 10);
+      const max = pointArr[2];
+      const min = pointArr[3];
 
       query[field] = {
         $near: {
