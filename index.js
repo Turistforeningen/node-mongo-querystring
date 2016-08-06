@@ -64,12 +64,9 @@ module.exports.prototype.customBBOX = (field) => (query, bbox) => {
 };
 
 module.exports.prototype.customNear = field => (query, point) => {
-  const pointArr = point.split(',');
+  const pointArr = point.split(',').map(p => parseFloat(p, 10));
 
   if (pointArr.length >= 2) {
-    pointArr[0] = parseFloat(pointArr[0], 10);
-    pointArr[1] = parseFloat(pointArr[1], 10);
-
     if (!isNaN(pointArr.reduce((a, b) => a + b))) {
       const max = parseInt(pointArr[2], 10);
       const min = parseInt(pointArr[3], 10);

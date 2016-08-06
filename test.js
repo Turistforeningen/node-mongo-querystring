@@ -66,6 +66,25 @@ describe('customNear()', () => {
       });
     });
   });
+
+  it('returns $near query with max distance', () => {
+    ['0,1,2', '60.70908,10.37140,211.123'].forEach(point => {
+      const q = {};
+
+      mqs.customNear('geojson')(q, point);
+      assert.deepEqual(q, {
+        geojson: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: point.split(',').splice(0, 3).map(parseFloat, 10),
+            },
+            $maxDistance: parseInt(point.split(',')[2], 10),
+          },
+        },
+      });
+    });
+  });
 });
 
 describe('customAfter()', () => {
