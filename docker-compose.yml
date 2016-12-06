@@ -8,12 +8,12 @@ services:
     image: node:argon
     working_dir: /usr/src/app
     links:
-      - mongo
+    - mongo
     volumes:
-      - .:/usr/src/app
+    - ".:/usr/src/app"
     environment:
-      - NODE_ENV=development
-      - NPM_CONFIG_LOGLEVEL=silent
-      - NPM_CONFIG_PROGRESS=false
-      - NPM_CONFIG_SPIN=false
+    - NODE_ENV=development
+    - NPM_CONFIG_LOGLEVEL=silent
+    - NPM_CONFIG_PROGRESS=false
+    - NPM_CONFIG_SPIN=false
     command: npm test
