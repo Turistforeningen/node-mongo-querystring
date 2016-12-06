@@ -154,6 +154,7 @@ pull request to this project's README.md.
 Note: If you make a significant contribution and are not considered for
 commit-access log an issue or contact one of the Collaborators directly.
 
+* Andy Klimczak - @andyklimczak
 * Hans Kristian Flaatten - @Starefossen
 * Edward Knowles - @eknowles
 
