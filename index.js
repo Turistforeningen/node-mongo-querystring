@@ -31,6 +31,15 @@ module.exports = function MongoQS(options) {
     this.custom.after = this.customAfter(this.custom.after);
   }
 
+  if (this.custom.before) {
+    this.custom.before = this.customBefore(this.custom.before);
+  }
+
+  if (this.custom.between) {
+    this.custom.between = this.customBetween(this.custom.between);
+  }
+
+
   return this;
 };
 
@@ -91,7 +100,7 @@ module.exports.prototype.customNear = field => (query, point) => {
   }
 };
 
-module.exports.prototype.customAfter = field => (query, value) => {
+function parseDate(value) {
   let date = value;
 
   if (!isNaN(date)) {
@@ -103,9 +112,41 @@ module.exports.prototype.customAfter = field => (query, value) => {
 
   date = new Date(date);
 
+  return date;
+}
+
+module.exports.prototype.customAfter = field => (query, value) => {
+  const date = parseDate(value);
+
   if (date.toString() !== 'Invalid Date') {
     query[field] = {
       $gte: date.toISOString(),
+    };
+  }
+};
+
+module.exports.prototype.customBefore = field => (query, value) => {
+  const date = parseDate(value);
+
+  if (date.toString() !== 'Invalid Date') {
+    query[field] = {
+      $lt: date.toISOString(),
+    };
+  }
+};
+
+module.exports.prototype.customBetween = field => (query, value) => {
+  const dates = value.split('|');
+  const afterValue = dates[0];
+  const beforeValue = dates[1];
+
+  const after = parseDate(afterValue);
+  const before = parseDate(beforeValue);
+
+  if (after.toString() !== 'Invalid Date' && before.toString() !== 'Invalid Date') {
+    query[field] = {
+      $gte: after.toISOString(),
+      $lt: before.toISOString(),
     };
   }
 };

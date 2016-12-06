@@ -59,11 +59,17 @@ useful when building an API and accepting various user specificed queries.
 
 * Custom query functions
   * `after` (date)
+  * `before` (date)
+  * `between` (date|date)
 
 | operation | query string  | query object |
 |-----------|---------------|--------------|
 | after | `?after=2014-01-01` | `{ endret: { $gte: "2014-01-01T00:00:00.000Z" } }` |
 | after | `?after=1388534400` | `{ endret: { $gte: "2014-01-01T00:00:00.000Z" } }` |
+| before | `?before=2014-01-01` | `{ endret: { $lt: "2014-01-01T00:00:00.000Z" } }` |
+| before | `?before=1388534400` | `{ endret: { $lt: "2014-01-01T00:00:00.000Z" } }` |
+| between | `?between=2014-01-01|2015-01-01` | `{ endret: { $gte: "2014-01-01T00:00:00.000Z", $lt: "2015-01-01T00:00:00.000Z" } }` |
+| between | `?between=1388534400|1420088400` | `{ endret: { $gte: "2014-01-01T00:00:00.000Z", $lt: "2015-01-01T00:00:00.000Z" } }` |
 
 ## Install
 

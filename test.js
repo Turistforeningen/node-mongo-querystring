@@ -143,6 +143,81 @@ describe('customAfter()', () => {
   });
 });
 
+describe('customBefore()', () => {
+  it('does not return before query for invalid date', () => {
+    ['foo', '2015-13-40'].forEach((date) => {
+      mqs.customBefore('endret')(query, date);
+      assert.deepEqual(query, {});
+    });
+  });
+
+  it('returns before query for valid ISO date', () => {
+    mqs.customBefore('endret')(query, '2014-09-22T11:50:37.843Z');
+    assert.deepEqual(query, {
+      endret: {
+        $lt: '2014-09-22T11:50:37.843Z',
+      },
+    });
+  });
+
+  it('returns before query for milliseconds timestamp', () => {
+    mqs.customBefore('endret')(query, '1411386637843');
+    assert.deepEqual(query, {
+      endret: {
+        $lt: '2014-09-22T11:50:37.843Z',
+      },
+    });
+  });
+
+  it('returns before query for unix timestamp', () => {
+    mqs.customBefore('endret')(query, '1411386637');
+    assert.deepEqual(query, {
+      endret: {
+        $lt: '2014-09-22T11:50:37.000Z',
+      },
+    });
+  });
+});
+
+describe('customBetween()', () => {
+  it('does not return between query for invalid date', () => {
+    ['foo|bar', '2015-13-40|2020-42-69'].forEach((date) => {
+      mqs.customBetween('endret')(query, date);
+      assert.deepEqual(query, {});
+    });
+  });
+
+  it('returns between query for valid ISO date', () => {
+    mqs.customBetween('endret')(query, '2014-09-22T11:50:37.843Z|2015-09-22T11:50:37.843Z');
+    assert.deepEqual(query, {
+      endret: {
+        $gte: '2014-09-22T11:50:37.843Z',
+        $lt: '2015-09-22T11:50:37.843Z',
+      },
+    });
+  });
+
+  it('returns between query for milliseconds timestamp', () => {
+    mqs.customBetween('endret')(query, '1411386637843|1442922637843');
+    assert.deepEqual(query, {
+      endret: {
+        $gte: '2014-09-22T11:50:37.843Z',
+        $lt: '2015-09-22T11:50:37.843Z',
+      },
+    });
+  });
+
+  it('returns before query for unix timestamp', () => {
+    mqs.customBetween('endret')(query, '1411386637|1442922637');
+    assert.deepEqual(query, {
+      endret: {
+        $gte: '2014-09-22T11:50:37.000Z',
+        $lt: '2015-09-22T11:50:37.000Z',
+      },
+    });
+  });
+});
+
 describe('parseStringVal()', () => {
   describe('true', () => {
     [
@@ -922,6 +997,37 @@ describe('parse()', () => {
       }), {
         endret: {
           $gte: '2014-01-01T00:00:00.000Z',
+        },
+      });
+    });
+
+    it('returns custom before query', () => {
+      mqs = new MongoQS({
+        custom: {
+          before: 'endret',
+        },
+      });
+      assert.deepEqual(mqs.parse({
+        before: '2014-01-01',
+      }), {
+        endret: {
+          $lt: '2014-01-01T00:00:00.000Z',
+        },
+      });
+    });
+
+    it('returns custom between query', () => {
+      mqs = new MongoQS({
+        custom: {
+          between: 'endret',
+        },
+      });
+      assert.deepEqual(mqs.parse({
+        between: '2014-01-01|2015-01-01',
+      }), {
+        endret: {
+          $gte: '2014-01-01T00:00:00.000Z',
+          $lt: '2015-01-01T00:00:00.000Z',
         },
       });
     });
