@@ -17,7 +17,7 @@ module.exports = function MongoQS(options) {
 
   this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
   this.valRegex = opts.valRegex || /[^a-zæøå0-9-_.* ]/i;
-  this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[\])?$/i;
+  this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[])?$/i;
 
   if (this.custom.bbox) {
     this.custom.bbox = this.customBBOX(this.custom.bbox);
@@ -34,7 +34,7 @@ module.exports = function MongoQS(options) {
   return this;
 };
 
-module.exports.prototype.customBBOX = (field) => (query, bbox) => {
+module.exports.prototype.customBBOX = field => (query, bbox) => {
   const bboxArr = bbox.split(',');
 
   if (bboxArr.length === 4) {
@@ -194,13 +194,13 @@ module.exports.prototype.parseStringVal = function parseStringVal(string) {
 module.exports.prototype.parse = function parse(query) {
   const res = {};
 
-  Object.keys(query).forEach(k => {
+  Object.keys(query).forEach((k) => {
     let key = k;
     const val = query[key];
 
     // normalize array keys
     if (val instanceof Array) {
-      key = key.replace(/\[\]$/, '');
+      key = key.replace(/\[]$/, '');
     }
 
     // whitelist
@@ -238,7 +238,7 @@ module.exports.prototype.parse = function parse(query) {
       if (this.ops.indexOf('$in') >= 0 && val.length > 0) {
         res[key] = {};
 
-        for (let i = 0; i < val.length; i++) {
+        for (let i = 0; i < val.length; i += 1) {
           if (this.ops.indexOf(val[i][0]) >= 0) {
             const parsed = this.parseString(val[i], true);
 

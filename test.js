@@ -16,7 +16,7 @@ beforeEach(() => {
 
 describe('customBBOX()', () => {
   it('does not return $geoWithin query for invalid bbox', () => {
-    ['0123', '0,1,2', '0,1,2,a'].forEach(bbox => {
+    ['0123', '0,1,2', '0,1,2,a'].forEach((bbox) => {
       mqs.customBBOX('gojson')(query, bbox);
       assert.deepEqual(query, {});
     });
@@ -45,14 +45,14 @@ describe('customBBOX()', () => {
 
 describe('customNear()', () => {
   it('does not return $near query for invalid point', () => {
-    ['0123', '0,'].forEach(bbox => {
+    ['0123', '0,'].forEach((bbox) => {
       mqs.customNear('gojson')(query, bbox);
       assert.deepEqual(query, {});
     });
   });
 
   it('returns $near query for valid point', () => {
-    ['0,1', '60.70908,10.37140'].forEach(point => {
+    ['0,1', '60.70908,10.37140'].forEach((point) => {
       mqs.customNear('geojson')(query, point);
       assert.deepEqual(query, {
         geojson: {
@@ -68,7 +68,7 @@ describe('customNear()', () => {
   });
 
   it('returns $near query with max distance', () => {
-    ['0,1,2', '60.70908,10.37140,211.123'].forEach(point => {
+    ['0,1,2', '60.70908,10.37140,211.123'].forEach((point) => {
       const q = {};
 
       mqs.customNear('geojson')(q, point);
@@ -87,7 +87,7 @@ describe('customNear()', () => {
   });
 
   it('returns $near query with max and min distance', () => {
-    ['0,1,2,4', '60.70908,10.37140,211.123,321.456'].forEach(point => {
+    ['0,1,2,4', '60.70908,10.37140,211.123,321.456'].forEach((point) => {
       const q = {};
 
       mqs.customNear('geojson')(q, point);
@@ -109,7 +109,7 @@ describe('customNear()', () => {
 
 describe('customAfter()', () => {
   it('does not return after query for invalid date', () => {
-    ['foo', '2015-13-40'].forEach(date => {
+    ['foo', '2015-13-40'].forEach((date) => {
       mqs.customAfter('endret')(query, date);
       assert.deepEqual(query, {});
     });
@@ -149,7 +149,7 @@ describe('parseStringVal()', () => {
       'true',
       'TrUe',
       'TRUE',
-    ].forEach(val => {
+    ].forEach((val) => {
       it(`returns true for "${val}" string`, () => {
         assert.strictEqual(mqs.parseStringVal(val), true);
       });
@@ -166,7 +166,7 @@ describe('parseStringVal()', () => {
       'false',
       'FaLsE',
       'FALSE',
-    ].forEach(val => {
+    ].forEach((val) => {
       it(`returns false for "${val}" string`, () => {
         assert.strictEqual(mqs.parseStringVal(val), false);
       });
@@ -199,7 +199,7 @@ describe('parseStringVal()', () => {
       ' 1 ',
       ' 100 ',
       ' 000100 ',
-    ].forEach(val => {
+    ].forEach((val) => {
       const ret = parseInt(val, 10);
 
       it(`returns ${ret} for "${val}"`, () => {
@@ -235,7 +235,7 @@ describe('parseStringVal()', () => {
       ' 1.1 ',
       ' 100.99 ',
       ' 000100.0099 ',
-    ].forEach(val => {
+    ].forEach((val) => {
       const ret = parseFloat(val, 10);
 
       it(`returns ${ret} for "${val}"`, () => {
@@ -275,7 +275,7 @@ describe('parseStringVal()', () => {
       'abc123',
       '123abc',
       '123abc123',
-    ].forEach(val => {
+    ].forEach((val) => {
       it(`returns "${val}" for "${val}"`, () => {
         assert.strictEqual(mqs.parseStringVal(val), val);
       });
