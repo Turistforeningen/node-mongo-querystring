@@ -12,8 +12,8 @@ module.exports = function MongoQS(options) {
   // String Value Parsing
   opts.string = opts.string || {};
   this.string = opts.string || {};
-  this.string.toBoolean = (typeof opts.string.toBoolean === "boolean") ? opts.string.toBoolean : true;
-  this.string.toNumber = (typeof opts.string.toNumber === "boolean") ? opts.string.toNumber : true;
+  this.string.toBoolean = (typeof opts.string.toBoolean === 'boolean') ? opts.string.toBoolean : true;
+  this.string.toNumber = (typeof opts.string.toNumber === 'boolean') ? opts.string.toNumber : true;
 
   this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
   this.valRegex = opts.valRegex || /[^a-zæøå0-9-_.* ]/i;
