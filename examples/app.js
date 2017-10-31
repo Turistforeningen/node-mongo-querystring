@@ -15,6 +15,7 @@ const qs = new MongoQS({
   custom: {
     bbox: 'geojson',
     near: 'geojson',
+    within: 'geojson',
   },
 });
 

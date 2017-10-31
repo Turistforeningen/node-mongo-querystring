@@ -43,6 +43,45 @@ describe('customBBOX()', () => {
   });
 });
 
+describe('customWithin()', () => {
+  it('does not return $geoWithin query for invalid polygon', () => {
+    [
+      // non matching first last
+      '1,1,2,2,2,3,1,2,2,2',
+      // not enough points
+      '1,1,2,2,2,3',
+      // odd length
+      '1,1,2,2,2,3,1',
+      // invalid value
+      '1,1,2,2,2,3,1,2,2,a',
+    ].forEach((polygon) => {
+      mqs.customWithin('gojson')(query, polygon);
+      assert.deepEqual(query, {});
+    });
+  });
+
+  it('returns $geoWithin query for valid polygon', () => {
+    const string = '1,1,2,2,2,3,1,2,1,1';
+    mqs.customWithin('geojson')(query, string);
+    assert.deepEqual(query, {
+      geojson: {
+        $geoWithin: {
+          $geometry: {
+            type: 'Polygon',
+            coordinates: [[
+              [1, 1],
+              [2, 2],
+              [2, 3],
+              [1, 2],
+              [1, 1],
+            ]],
+          },
+        },
+      },
+    });
+  });
+});
+
 describe('customNear()', () => {
   it('does not return $near query for invalid point', () => {
     ['0123', '0,'].forEach((bbox) => {
@@ -103,6 +142,45 @@ describe('customNear()', () => {
           },
         },
       });
+    });
+  });
+});
+
+describe('customWithin()', () => {
+  it('does not return $geoWithin query for invalid polygon', () => {
+    [
+      // non matching first last
+      '1,1,2,2,2,3,1,2,2,2',
+      // not enough points
+      '1,1,2,2,2,3',
+      // odd length
+      '1,1,2,2,2,3,1',
+      // invalid value
+      '1,1,2,2,2,3,1,2,2,a',
+    ].forEach((polygon) => {
+      mqs.customWithin('gojson')(query, polygon);
+      assert.deepEqual(query, {});
+    });
+  });
+
+  it('returns $geoWithin query for valid polygon', () => {
+    const string = '1,1,2,2,2,3,1,2,1,1';
+    mqs.customWithin('geojson')(query, string);
+    assert.deepEqual(query, {
+      geojson: {
+        $geoWithin: {
+          $geometry: {
+            type: 'Polygon',
+            coordinates: [[
+              [1, 1],
+              [2, 2],
+              [2, 3],
+              [1, 2],
+              [1, 1],
+            ]],
+          },
+        },
+      },
     });
   });
 });
