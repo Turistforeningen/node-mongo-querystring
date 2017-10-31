@@ -27,6 +27,10 @@ module.exports = function MongoQS(options) {
     this.custom.near = this.customNear(this.custom.near);
   }
 
+  if (this.custom.within) {
+    this.custom.within = this.customWithin(this.custom.within);
+  }
+
   if (this.custom.after) {
     this.custom.after = this.customAfter(this.custom.after);
   }
@@ -95,6 +99,74 @@ module.exports.prototype.customNear = field => (query, point) => {
         if (!isNaN(min)) {
           query[field].$near.$minDistance = min;
         }
+      }
+    }
+  }
+};
+
+module.exports.prototype.customWithin = field => (query, pointList) => {
+  const pointStrArr = pointList.split(',');
+
+  //need at least four points to make a polygon
+  if(pointStrArr.length < 8) {
+    return {};
+  }
+
+  //ensure even amount of points
+  if(pointStrArr.length % 2 !== 0) {
+    return {};
+  }
+
+  //convert every string to a float
+  var pointNumArr = [];
+
+  try {
+    pointStrArr.forEach(str => {
+      var num = parseFloat(str, 10);
+
+      //if float conversion fails from bad input, return empty
+      if(isNaN(num)) {
+        throw new Error('Invalid value passed as polygon coordinate')
+      }
+
+      pointNumArr.push(num);
+    })
+  } catch (err) {
+    return {}
+  }
+
+  //build our coordinates array
+  var coordinates = [];
+
+  try {
+    for(var i = 0 ; i < pointNumArr.length ; i = i + 2) {
+      //should never happen from previous check
+      if(i+1 >= pointNumArr.length) {
+        throw new Error("Odd number of points given")
+      }
+
+      coordinates.push([pointNumArr[i], pointNumArr[i+1]]);
+    }
+  } catch (err) {
+    return {}
+  }
+
+  // check if last coordinate matches first, if not go ahead an add first into list
+  var lastIndex = coordinates.length-1;
+  var firstLon = coordinates[0][0]
+  var firstLat = coordinates[0][1]
+  var lastLon = coordinates[lastIndex][0]
+  var lastLat = coordinates[lastIndex][1]
+
+  if (firstLon !== lastLon || firstLat !== lastLat) {
+    return {}
+  }
+
+  query[field] = {
+    $geoWithin: {
+      $geometry : {
+        type: 'Polygon',
+        coordinates: [coordinates]
       }
     }
   }
@@ -192,7 +264,7 @@ module.exports.prototype.parseString = function parseString(string, array) {
           break;
         default:
           break;
-      }
+        }
       break;
     default:
       ret.org = org = op + org;

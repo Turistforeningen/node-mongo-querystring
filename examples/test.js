@@ -99,6 +99,34 @@ describe('Example App', () => {
       .end(done);
   });
 
+  it('returns places inside polygon', (done) => {
+    const polygon = [
+      5.9490966796875,
+      61.025705069868856,
+      5.987548828125,
+      60.994423108456154,
+      6.10565185546875,
+      60.98376689595989,
+      6.1962890625,
+      61.016390262027116,
+      6.115264892578125,
+      61.04964487995011,
+      5.969696044921875,
+      61.0516390483921,
+      5.9490966796875,
+      61.025705069868856,
+    ].join(',');
+
+    app.get(`${url}?within=${polygon}`)
+      .expect(200)
+      .expect((res) => {
+        assert.equal(res.body.length, 2);
+        assert.equal(res.body[0].name, 'Solrenningen');
+        assert.equal(res.body[1].name, 'Norddalshytten');
+      })
+      .end(done);
+  });
+
   it('returns places with any of the following tags', (done) => {
     app.get(`${url}?tags[]=Båt&tags[]=Stekeovn`)
       .expect(200)
