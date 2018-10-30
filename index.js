@@ -15,6 +15,10 @@ module.exports = function MongoQS(options) {
   this.string.toBoolean = (typeof opts.string.toBoolean === 'boolean') ? opts.string.toBoolean : true;
   this.string.toNumber = (typeof opts.string.toNumber === 'boolean') ? opts.string.toNumber : true;
 
+  opts.date = opts.date || {};
+  this.date = opts.date || {};
+  this.date.toString = (typeof opts.date.toString === 'boolean') ? opts.date.toString : true;
+
   this.keyRegex = opts.keyRegex || /^[a-zæøå0-9-_.]+$/i;
   this.valRegex = opts.valRegex || /[^a-zæøå0-9-_.* ]/i;
   this.arrRegex = opts.arrRegex || /^[a-zæøå0-9-_.]+(\[])?$/i;
@@ -115,41 +119,47 @@ function parseDate(value) {
   return date;
 }
 
-module.exports.prototype.customAfter = field => (query, value) => {
-  const date = parseDate(value);
+module.exports.prototype.customAfter = function customAfter(field) {
+  return (query, value) => {
+    const date = parseDate(value);
 
-  if (date.toString() !== 'Invalid Date') {
-    query[field] = {
-      $gte: date.toISOString(),
-    };
-  }
+    if (date.toString() !== 'Invalid Date') {
+      query[field] = {
+        $gte: this.date.toString ? date.toISOString() : date,
+      };
+    }
+  };
 };
 
-module.exports.prototype.customBefore = field => (query, value) => {
-  const date = parseDate(value);
+module.exports.prototype.customBefore = function customBefore(field) {
+  return (query, value) => {
+    const date = parseDate(value);
 
-  if (date.toString() !== 'Invalid Date') {
-    query[field] = {
-      $lt: date.toISOString(),
-    };
-  }
+    if (date.toString() !== 'Invalid Date') {
+      query[field] = {
+        $lt: this.date.toString ? date.toISOString() : date,
+      };
+    }
+  };
 };
 
-module.exports.prototype.customBetween = field => (query, value) => {
-  const dates = value.split('|');
-  const afterValue = dates[0];
-  const beforeValue = dates[1];
+module.exports.prototype.customBetween = function customBetween(field) {
+  return (query, value) => {
+    const dates = value.split('|');
+    const afterValue = dates[0];
+    const beforeValue = dates[1];
 
-  const after = parseDate(afterValue);
-  const before = parseDate(beforeValue);
+    const after = parseDate(afterValue);
+    const before = parseDate(beforeValue);
 
-  if (after.toString() !== 'Invalid Date' && before.toString() !== 'Invalid Date') {
-    query[field] = {
-      $gte: after.toISOString(),
-      $lt: before.toISOString(),
-    };
-  }
-};
+    if (after.toString() !== 'Invalid Date' && before.toString() !== 'Invalid Date') {
+      query[field] = {
+        $gte: this.date.toString ? after.toISOString() : after,
+        $lt: this.date.toString ? before.toISOString() : before,
+      };
+    }
+  };
+}
 
 module.exports.prototype.parseString = function parseString(string, array) {
   let op = string[0] || '';
