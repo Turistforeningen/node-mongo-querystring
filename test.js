@@ -124,6 +124,16 @@ describe('customAfter()', () => {
     });
   });
 
+  it('returns after query for valid ISO date, toString false', () => {
+    mqs.date.toString = false;
+    mqs.customAfter('endret')(query, '2014-09-22T11:50:37.843Z');
+    assert.deepEqual(query, {
+      endret: {
+        $gte: new Date('2014-09-22T11:50:37.843Z'),
+      },
+    });
+  });
+
   it('returns after query for milliseconds timestamp', () => {
     mqs.customAfter('endret')(query, '1411386637843');
     assert.deepEqual(query, {
@@ -156,6 +166,16 @@ describe('customBefore()', () => {
     assert.deepEqual(query, {
       endret: {
         $lt: '2014-09-22T11:50:37.843Z',
+      },
+    });
+  });
+
+  it('returns before query for valid ISO date, toString false', () => {
+    mqs.date.toString = false;
+    mqs.customBefore('endret')(query, '2014-09-22T11:50:37.843Z');
+    assert.deepEqual(query, {
+      endret: {
+        $lt: new Date('2014-09-22T11:50:37.843Z'),
       },
     });
   });
@@ -193,6 +213,17 @@ describe('customBetween()', () => {
       endret: {
         $gte: '2014-09-22T11:50:37.843Z',
         $lt: '2015-09-22T11:50:37.843Z',
+      },
+    });
+  });
+
+  it('returns between query for valid ISO date, toString false', () => {
+    mqs.date.toString = false;
+    mqs.customBetween('endret')(query, '2014-09-22T11:50:37.843Z|2015-09-22T11:50:37.843Z');
+    assert.deepEqual(query, {
+      endret: {
+        $gte: new Date('2014-09-22T11:50:37.843Z'),
+        $lt: new Date('2015-09-22T11:50:37.843Z'),
       },
     });
   });
