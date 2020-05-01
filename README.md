@@ -9,7 +9,7 @@
 [![Dependency status](https://img.shields.io/david/Turistforeningen/node-mongo-querystring.svg "Dependency status")](https://david-dm.org/Turistforeningen/node-mongo-querystring)
 
 Accept MongoDB query parameters through URI queries safe and easy. This is
-useful when building an API and accepting various user specificed queries.
+useful when building an API and accepting various user specified queries.
 
 ## Features
 
@@ -114,7 +114,7 @@ var qs = new MongoQS({
 
 #### Define custom queries
 
-Custom queries are on the folling form; you define the URL query parameter name
+Custom queries are on the following form; you define the URL query parameter name
 that your users will be using and a function which takes the result query object
 and the value for query parameter.
 
@@ -125,7 +125,7 @@ var qs = new MongoQS({
       // do some processing of input value
       // add your queries to the query object
       query['someField'] = input;
-      query['someOtherFiled'] = 'some value';
+      query['someOtherField'] = 'some value';
     }
   }
 });
